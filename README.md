@@ -25,26 +25,57 @@ For deep technical details, see the full [Architecture Documentation](docs/whole
 - **Build System**: CMake (>= 3.15) and Make
 - **Libraries**: `ncurses` development headers (`libncurses-dev` on Debian/Ubuntu, `ncurses-devel` on RHEL/Fedora)
 
-## Building from Source
+## Installation
+
+### Method 1: Download the Pre-Compiled Binary (Easiest)
+
+If you don't want to compile the project yourself, you can download the ready-to-use binary directly from our GitHub Releases page!
+
+1. Go to the **Releases** tab on GitHub and download the `sysmon` executable.
+2. Make it executable:
+   ```bash
+   chmod +x sysmon
+   ```
+3. Move it to your system binaries so you can run it from anywhere:
+   ```bash
+   sudo mv sysmon /usr/local/bin/
+   ```
+
+### Method 2: Building from Source
+
+To compile the source code yourself, you will need `cmake`, `make`, `gcc/g++`, and `libncurses-dev`.
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/sysmon.git
+git clone https://github.com/mukundangopalachary/sysmon.git
 cd sysmon
 
 # 2. Build the project
 make build
 
-# 3. Run the monitor
-./build/sysmon
+# 3. Install globally (this allows you to run `sysmon` from anywhere)
+sudo make install
 ```
 
 Other available Make targets:
 - `make debug`: Build with address and undefined behavior sanitizers enabled.
 - `make test`: Run the test suite.
-- `make install`: Install to system paths (`/usr/local/bin`).
+- `make install`: Install to system paths (`/usr/local/bin` and config files to `/usr/local/share`).
 
-## Configuration
+## Usage
+
+Simply type `sysmon` in your terminal to launch the dashboard.
+
+**Keybindings:**
+- `[d]` Dashboard View
+- `[p]` Process List
+- `[c]` Connections View
+- `[q]` Quit Application
+- `[Up/Down]` Navigate lists
+- `[ENTER]` View deeper process details
+- `[ESC]` Return from details
+
+You can also run `sysmon --help` to view CLI options.
 
 SYSMON looks for configuration files in the following order:
 1. Command-line arguments (`--interval 500`, etc.)
