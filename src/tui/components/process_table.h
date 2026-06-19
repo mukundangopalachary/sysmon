@@ -8,5 +8,11 @@ public:
     ~ProcessTablePanel() override;
     void render(const SystemSnapshot* snapshot) override;
     bool handle_input(int key) override;
+
+private:
+    int selected_row_ = 0;
+    int scroll_offset_ = 0;
+    int sort_column_ = 0;
+    bool sort_desc_ = true;
 };
 #endif
