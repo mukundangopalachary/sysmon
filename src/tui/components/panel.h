@@ -14,6 +14,8 @@ public:
     virtual bool handle_input(int key);
     void draw_border(bool focused = false);
     void draw_title(const char* title);
+    void draw_footer(const char* text);
+    void draw_top_right(const char* text);
     void clear_content();
 protected:
     WINDOW* window;

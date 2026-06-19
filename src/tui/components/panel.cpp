@@ -45,6 +45,22 @@ void Panel::draw_title(const char* title) {
     }
 }
 
+void Panel::draw_footer(const char* text) {
+    if (window && text && height_ > 2) {
+        mvwprintw(window, height_ - 1, 2, " %s ", text);
+    }
+}
+
+void Panel::draw_top_right(const char* text) {
+    if (window && text && width_ > 10) {
+        int len = 0;
+        for (const char* p = text; *p; p++) len++;
+        int start_x = width_ - len - 3;
+        if (start_x < 2) start_x = 2;
+        mvwprintw(window, 0, start_x, " %s ", text);
+    }
+}
+
 void Panel::clear_content() {
     if (window) {
         werase(window);

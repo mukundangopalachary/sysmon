@@ -9,6 +9,7 @@ void DiskPanel::render(const SystemSnapshot* snapshot) {
     if (!snapshot) return;
     draw_border();
     draw_title("Disk I/O");
+    draw_footer("Read/Write bytes per sec");
 
     if (snapshot->disk == nullptr) {
         mvwprintw(window, 1, 1, "Disk stats disabled");

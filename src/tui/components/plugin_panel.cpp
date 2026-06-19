@@ -11,6 +11,7 @@ PluginPanel::~PluginPanel() {}
 void PluginPanel::render(const SystemSnapshot* snapshot) {
     draw_border(false);
     draw_title("Plugins");
+    draw_footer("External script data");
     
     if (!snapshot || !snapshot->plugin_data) {
         mvwprintw(window, 1, 2, "No plugin data");

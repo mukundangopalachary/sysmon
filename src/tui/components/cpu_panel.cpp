@@ -9,6 +9,7 @@ void CpuPanel::render(const SystemSnapshot* snapshot) {
     if (!snapshot) return;
     draw_border();
     draw_title("CPU");
+    draw_footer("CPU Usage (Total %)");
 
     int h, w;
     getmaxyx(window, h, w);

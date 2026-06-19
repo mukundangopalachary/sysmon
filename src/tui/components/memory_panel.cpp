@@ -7,11 +7,10 @@ MemoryPanel::MemoryPanel(int height, int width, int start_y, int start_x)
 MemoryPanel::~MemoryPanel() {}
 
 void MemoryPanel::render(const SystemSnapshot* snapshot) {
-    if (!window || !snapshot) return;
-
-    clear_content();
+    if (!snapshot) return;
     draw_border();
     draw_title("Memory");
+    draw_footer("RAM & SWAP (Total/Used/Free)");
 
     // RAM
     mvwprintw(window, 2, 2, "RAM:");

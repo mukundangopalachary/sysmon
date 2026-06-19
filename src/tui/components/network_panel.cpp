@@ -9,6 +9,7 @@ void NetworkPanel::render(const SystemSnapshot* snapshot) {
     if (!snapshot) return;
     draw_border();
     draw_title("Network");
+    draw_footer("I/O (Rx/Tx bytes per sec)");
 
     int h, w;
     getmaxyx(window, h, w);

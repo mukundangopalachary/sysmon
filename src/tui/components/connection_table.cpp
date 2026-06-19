@@ -8,7 +8,11 @@ ConnectionTablePanel::ConnectionTablePanel(int height, int width, int start_y, i
 ConnectionTablePanel::~ConnectionTablePanel() {}
 
 void ConnectionTablePanel::render(const SystemSnapshot* snapshot) {
-    if (!snapshot || !snapshot->connections || snapshot->connections->num_connections == 0) {
+    if (!snapshot || !snapshot->connections) return;
+    draw_border();
+    draw_title("Connections");
+    draw_top_right("TCP/UDP Network Sockets");
+    if (snapshot->connections->num_connections == 0) {
         mvwprintw(window, 1, 1, "No data");
         wrefresh(window);
         return;

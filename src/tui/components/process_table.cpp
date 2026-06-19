@@ -13,6 +13,7 @@ void ProcessTablePanel::render(const SystemSnapshot* snapshot) {
     if (!snapshot || !snapshot->processes.processes) return;
     draw_border();
     draw_title("Processes");
+    draw_top_right("Total Processes / Active threads");
 
     int h, w;
     getmaxyx(window, h, w);
