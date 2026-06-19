@@ -29,7 +29,8 @@ int cli_main(int argc, char** argv) {
     } else if (strcmp(command, "theme") == 0) {
         printf("Theme command not yet implemented.\n");
     } else if (strcmp(command, "registry") == 0) {
-        printf("Registry command not yet implemented.\n");
+        extern int cli_registry_main(int argc, char** argv);
+        return cli_registry_main(argc, argv);
     } else if (strcmp(command, "--help") == 0 || strcmp(command, "-h") == 0) {
         print_usage();
         return 0;

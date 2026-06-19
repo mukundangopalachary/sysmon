@@ -60,6 +60,7 @@ set(CORE_SOURCES
     src/core/plugin_manifest.c
     src/core/plugin_state.c
     src/core/plugin_protocol.c
+    src/core/plugin_registry.c
     src/bridge/sysmon_bridge.c
 )
 
@@ -83,6 +84,7 @@ set(CORE_HEADERS
     src/core/plugin_manifest.h
     src/core/plugin_state.h
     src/core/plugin_protocol.h
+    src/core/plugin_registry.h
 )
 
 # C++ TUI Library
@@ -157,11 +159,11 @@ target_link_libraries(sysmon_tui PUBLIC
 )
 
 # ── Main Executable ───────────────────────────────────────────
-add_executable(sysmon src/main.cpp src/cli/cli_main.c src/cli/cli_config.c src/cli/cli_plugin.c)
+add_executable(sysmon src/main.cpp src/cli/cli_main.c src/cli/cli_config.c src/cli/cli_plugin.c src/cli/cli_registry.c)
 target_include_directories(sysmon PRIVATE ${CMAKE_SOURCE_DIR}/src/cli)
 target_link_libraries(sysmon PRIVATE sysmon_tui)
 
-add_executable(sysmon-cli src/cli/main.c src/cli/cli_main.c src/cli/cli_config.c src/cli/cli_plugin.c)
+add_executable(sysmon-cli src/cli/main.c src/cli/cli_main.c src/cli/cli_config.c src/cli/cli_plugin.c src/cli/cli_registry.c)
 target_include_directories(sysmon-cli PRIVATE ${CMAKE_SOURCE_DIR}/src/cli)
 target_link_libraries(sysmon-cli PRIVATE sysmon_core)
 

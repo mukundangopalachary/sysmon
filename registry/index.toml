@@ -1,0 +1,13 @@
+[[plugin]]
+name = "docker-monitor"
+version = "1.0.0"
+description = "Monitors running Docker containers and their resource usage"
+url = "https://example.com/sysmon-plugins/docker-monitor-1.0.0.tar.gz"
+checksum = "dummy-checksum"
+
+[[plugin]]
+name = "gpu-monitor"
+version = "1.1.0"
+description = "Monitors GPU load and memory usage (Update Available!)"
+url = "https://example.com/sysmon-plugins/gpu-monitor-1.1.0.tar.gz"
+checksum = "dummy-checksum"

@@ -5,6 +5,7 @@
 #include "plugin_manifest.h"
 #include "plugin_state.h"
 #include "plugin_protocol.h"
+#include "plugin_registry.h"
 #include "config_paths.h"
 
 int cli_plugin_main(int argc, char** argv) {
@@ -12,6 +13,9 @@ int cli_plugin_main(int argc, char** argv) {
         printf("Usage: sysmon plugin <command> [args]\n");
         printf("Commands:\n");
         printf("  list            List all installed plugins\n");
+        printf("  search <query>  Search for plugins in registry\n");
+        printf("  install <name>  Install a plugin from registry\n");
+        printf("  uninstall <name> Uninstall a plugin\n");
         printf("  info <name>     Show manifest details\n");
         printf("  enable <name>   Enable a plugin\n");
         printf("  disable <name>  Disable a plugin\n");
@@ -99,6 +103,46 @@ int cli_plugin_main(int argc, char** argv) {
             printf("Check FAILED.\n");
             return 1;
         }
+    } else if (strcmp(subcmd, "search") == 0) {
+        PluginRegistry registry;
+        if (!registry_load_local(&registry)) {
+            printf("Failed to load local registry. Run 'sysmon registry update' first.\n");
+            return 1;
+        }
+        
+        const char* query = (argc > 3) ? argv[3] : "";
+        RegistryPlugin results[MAX_REGISTRY_PLUGINS];
+        int count = registry_search(&registry, query, results, MAX_REGISTRY_PLUGINS);
+        
+        printf("Found %d plugins matching '%s':\n", count, query);
+        for (int i = 0; i < count; i++) {
+            printf("  %s (v%s) - %s\n", results[i].name, results[i].version, results[i].description);
+        }
+    } else if (strcmp(subcmd, "install") == 0) {
+        if (argc < 4) {
+            printf("Usage: sysmon plugin install <name>\n");
+            return 1;
+        }
+        const char* name = argv[3];
+        PluginRegistry registry;
+        if (!registry_load_local(&registry)) {
+            printf("Failed to load local registry. Run 'sysmon registry update' first.\n");
+            return 1;
+        }
+        RegistryPlugin target;
+        if (!registry_find_exact(&registry, name, &target)) {
+            printf("Plugin '%s' not found in registry.\n", name);
+            return 1;
+        }
+        registry_install_plugin(&target);
+    } else if (strcmp(subcmd, "uninstall") == 0) {
+        if (argc < 4) {
+            printf("Usage: sysmon plugin uninstall <name>\n");
+            return 1;
+        }
+        const char* name = argv[3];
+        plugin_state_set_enabled(name, false); // ensure disabled
+        registry_uninstall_plugin(name);
     } else {
         printf("Unknown plugin command: %s\n", subcmd);
         return 1;
