@@ -9,7 +9,7 @@ int disk_stats_read(DiskSnapshot* snap) {
     memset(snap, 0, sizeof(*snap));
 
     char buf[16384];
-    if (read_file_to_buf("/proc/diskstats", buf, sizeof(buf)) != 0) return -1;
+    if (read_file_to_buf("/proc/diskstats", buf, sizeof(buf)) <= 0) return -1;
 
     char* saveptr;
     char* line = strtok_r(buf, "\n", &saveptr);

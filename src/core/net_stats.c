@@ -9,7 +9,7 @@ int net_stats_read(NetworkSnapshot* snap) {
     memset(snap, 0, sizeof(*snap));
 
     char buf[8192];
-    if (read_file_to_buf("/proc/net/dev", buf, sizeof(buf)) != 0) return -1;
+    if (read_file_to_buf("/proc/net/dev", buf, sizeof(buf)) <= 0) return -1;
 
     char* saveptr;
     char* line = strtok_r(buf, "\n", &saveptr);
@@ -49,7 +49,7 @@ int net_stats_read(NetworkSnapshot* snap) {
             char sys_path[256];
             snprintf(sys_path, sizeof(sys_path), "/sys/class/net/%s/operstate", iface->name);
             char operstate[32];
-            if (read_file_to_buf(sys_path, operstate, sizeof(operstate)) == 0) {
+            if (read_file_to_buf(sys_path, operstate, sizeof(operstate)) > 0) {
                 if (strncmp(operstate, "up", 2) == 0 || strncmp(operstate, "unknown", 7) == 0) {
                     iface->is_up = true;
                 } else {

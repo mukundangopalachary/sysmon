@@ -9,7 +9,7 @@ int mem_stats_read(MemorySnapshot* snap) {
     memset(snap, 0, sizeof(*snap));
 
     char buf[8192];
-    if (read_file_to_buf("/proc/meminfo", buf, sizeof(buf)) != 0) return -1;
+    if (read_file_to_buf("/proc/meminfo", buf, sizeof(buf)) <= 0) return -1;
 
     uint64_t hugepages_size = 0;
     uint64_t hugepages_total = 0;

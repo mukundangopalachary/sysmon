@@ -14,7 +14,7 @@ int cpu_stats_read(CpuSnapshot* snap) {
     snap->timestamp_us = (uint64_t)tv.tv_sec * 1000000 + tv.tv_usec;
 
     char buf[8192];
-    if (read_file_to_buf("/proc/stat", buf, sizeof(buf)) == 0) {
+    if (read_file_to_buf("/proc/stat", buf, sizeof(buf)) > 0) {
         char* saveptr;
         char* line = strtok_r(buf, "\n", &saveptr);
         while (line) {
@@ -43,7 +43,7 @@ int cpu_stats_read(CpuSnapshot* snap) {
         }
     }
 
-    if (read_file_to_buf("/proc/loadavg", buf, sizeof(buf)) == 0) {
+    if (read_file_to_buf("/proc/loadavg", buf, sizeof(buf)) > 0) {
         sscanf(buf, "%lf %lf %lf", &snap->load_avg_1min, &snap->load_avg_5min, &snap->load_avg_15min);
     }
 
