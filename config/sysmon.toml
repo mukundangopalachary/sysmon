@@ -1,0 +1,25 @@
+[collection]
+interval_ms = 1000
+max_processes = 10000
+
+[display]
+theme = "default"
+refresh_rate_hz = 30
+compact_mode = false
+
+[sorting]
+process_default_column = "cpu"
+process_default_order = "descending"
+
+[keybindings]
+quit = "q"
+dashboard = "F1"
+process_list = "F2"
+connections = "F3"
+plugins = "F4"
+help = "?"
+
+[alerts]
+enabled = false
+cpu_threshold = 90
+memory_threshold = 95
