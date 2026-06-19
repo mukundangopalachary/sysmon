@@ -142,8 +142,8 @@ void* collection_thread_func(void* arg) {
         if (engine->collect_connections) {
             if (!snap->connections) {
                 snap->connections = calloc(1, sizeof(ConnectionTableSnapshot));
-                snap->connections->capacity = 4096;
                 snap->connections->connections = calloc(4096, sizeof(ConnectionSnapshot));
+                snap->connections->capacity = 4096;
             }
             net_connections_read(snap->connections);
         }
