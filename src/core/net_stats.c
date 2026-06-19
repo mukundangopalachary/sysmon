@@ -28,7 +28,7 @@ int net_stats_read(NetworkSnapshot* snap) {
                    &tb, &tp, &te, &td, &tfifo, &tcol, &tcarrier, &tcomp) >= 17) {
             
             NetworkIfaceSnapshot* iface = &snap->interfaces[snap->num_interfaces];
-            snprintf(iface->name, sizeof(iface->name), "%s", name);
+            snprintf(iface->name, sizeof(iface->name), "%.31s", name);
             
             iface->rx_bytes = rb;
             iface->rx_packets = rp;

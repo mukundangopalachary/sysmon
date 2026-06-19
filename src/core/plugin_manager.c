@@ -16,7 +16,7 @@ int plugin_manager_init(PluginManager* mgr, const char* plugin_dir) {
     while ((entry = readdir(dir)) != NULL) {
         if (strstr(entry->d_name, ".sh") && mgr->num_plugins < 32) {
             PluginInstance* p = &mgr->plugins[mgr->num_plugins];
-            strncpy(p->name, entry->d_name, sizeof(p->name) - 1);
+            snprintf(p->name, sizeof(p->name), "%.63s", entry->d_name);
             snprintf(p->path, sizeof(p->path), "%s/%s", plugin_dir, entry->d_name);
             mgr->num_plugins++;
         }
@@ -26,6 +26,7 @@ int plugin_manager_init(PluginManager* mgr, const char* plugin_dir) {
 }
 
 int plugin_manager_load_plugins(PluginManager* mgr) {
+    (void)mgr;
     return 0;
 }
 
