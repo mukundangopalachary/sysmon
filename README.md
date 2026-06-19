@@ -17,7 +17,7 @@ SYSMON uses a multi-threaded, bifurcated architecture:
 1. **Core Data Engine (C11)**: A highly optimized background thread that iterates through `/proc` and `/sys` to gather data into immutable memory snapshots.
 2. **TUI Framework (C++17)**: An event-driven rendering thread powered by `ncurses` that consumes the snapshots without blocking and provides interactive views.
 
-For deep technical details, see the full [Architecture Documentation](docs/whole_doc.md).
+For deep technical details, see the full [Architecture Documentation](docs/v1-architecture.md).
 
 ## Prerequisites
 
@@ -92,7 +92,7 @@ See the [default configuration file](config/default.conf) for all available opti
 
 ## Development Roadmap
 
-The project is currently under active development. It is being built in 9 distinct phases. Check out the [Build Roadmap](docs/roadmap.md) to see the progress and upcoming milestones.
+The project is currently under active development. It is being built in 9 distinct phases. Check out the [Build Roadmap](docs/v1-roadmap.md) to see the progress and upcoming milestones.
 
 ## License
 
