@@ -38,6 +38,10 @@ int cpu_stats_read(CpuSnapshot* snap) {
                         snap->num_cores++;
                     }
                 }
+            } else if (strncmp(line, "ctxt", 4) == 0) {
+                sscanf(line + 5, "%llu", (unsigned long long*)&snap->context_switches);
+            } else if (strncmp(line, "intr", 4) == 0) {
+                sscanf(line + 5, "%llu", (unsigned long long*)&snap->interrupts);
             }
             line = strtok_r(NULL, "\n", &saveptr);
         }

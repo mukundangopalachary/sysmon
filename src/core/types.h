@@ -61,6 +61,10 @@ typedef struct {
     uint64_t total_ticks;           /* Sum of all above */
     uint64_t active_ticks;          /* total - idle - iowait */
     double usage_percent;           /* Calculated from previous snapshot */
+    double user_percent;
+    double sys_percent;
+    double iowait_percent;
+    double steal_percent;
 } CpuCoreSnapshot;
 
 typedef struct {
@@ -70,6 +74,10 @@ typedef struct {
     double load_avg_1min;
     double load_avg_5min;
     double load_avg_15min;
+    uint64_t context_switches;
+    uint64_t interrupts;
+    double ctxt_rate;               /* Context switches per sec */
+    double irq_rate;                /* Interrupts per sec */
 } CpuSnapshot;
 
 /*

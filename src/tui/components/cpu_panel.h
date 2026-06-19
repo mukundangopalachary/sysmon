@@ -8,5 +8,7 @@ public:
     ~CpuPanel() override;
     void render(const SystemSnapshot* snapshot) override;
     bool handle_input(int key) override;
+private:
+    bool show_per_core_ = false;
 };
 #endif

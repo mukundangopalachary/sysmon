@@ -41,6 +41,8 @@ struct CollectionEngine {
     CpuCoreSnapshot* prev_cpu;      /* Per-core previous times */
     NetworkIfaceSnapshot* prev_net; /* Per-interface previous bytes */
     uint64_t prev_timestamp_us;
+    uint64_t prev_ctxt;
+    uint64_t prev_irq;
     
     /* Plugins */
     PluginManager plugin_mgr;

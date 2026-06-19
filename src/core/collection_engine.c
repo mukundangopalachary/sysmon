@@ -28,9 +28,34 @@ static void compute_cpu_percentages(SystemSnapshot* snap, CpuCoreSnapshot* prev_
         
         if (total_delta > 0) {
             curr->usage_percent = ((double)active_delta / total_delta) * 100.0;
+            curr->user_percent = ((double)(curr->user + curr->nice - prev->user - prev->nice) / total_delta) * 100.0;
+            curr->sys_percent = ((double)(curr->system + curr->irq + curr->softirq - prev->system - prev->irq - prev->softirq) / total_delta) * 100.0;
+            curr->iowait_percent = ((double)(curr->iowait - prev->iowait) / total_delta) * 100.0;
+            curr->steal_percent = ((double)(curr->steal - prev->steal) / total_delta) * 100.0;
         } else {
             curr->usage_percent = 0.0;
+            curr->user_percent = 0.0;
+            curr->sys_percent = 0.0;
+            curr->iowait_percent = 0.0;
+            curr->steal_percent = 0.0;
         }
+    }
+}
+
+static void compute_global_rates(SystemSnapshot* snap, CollectionEngine* engine) {
+    if (engine->prev_timestamp_us == 0) return;
+    
+    uint64_t delta_us = snap->collection_timestamp_us - engine->prev_timestamp_us;
+    if (delta_us == 0) return;
+    
+    double delta_sec = delta_us / 1000000.0;
+    
+    if (snap->cpu.context_switches >= engine->prev_ctxt) {
+        snap->cpu.ctxt_rate = (snap->cpu.context_switches - engine->prev_ctxt) / delta_sec;
+    }
+    
+    if (snap->cpu.interrupts >= engine->prev_irq) {
+        snap->cpu.irq_rate = (snap->cpu.interrupts - engine->prev_irq) / delta_sec;
     }
 }
 
@@ -160,11 +185,14 @@ void* collection_thread_func(void* arg) {
         compute_cpu_percentages(snap, engine->prev_cpu, engine->prev_timestamp_us);
         compute_network_rates(snap, engine->prev_net, engine->prev_timestamp_us);
         compute_process_cpu_percentages(snap, engine->snapshot_mgr);
+        compute_global_rates(snap, engine);
         
         memcpy(engine->prev_cpu, snap->cpu.cores, sizeof(CpuCoreSnapshot) * snap->cpu.num_cores);
         memset(engine->prev_net, 0, sizeof(NetworkIfaceSnapshot) * 32);
         memcpy(engine->prev_net, snap->network.interfaces, sizeof(NetworkIfaceSnapshot) * snap->network.num_interfaces);
         engine->prev_timestamp_us = start_time;
+        engine->prev_ctxt = snap->cpu.context_switches;
+        engine->prev_irq = snap->cpu.interrupts;
         
         snap->collection_sequence++;
         snap->collection_duration_us = get_time_us() - start_time;
