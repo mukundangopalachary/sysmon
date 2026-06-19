@@ -1,0 +1,50 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libncurses-dev libncursesw5-dev build-essential cmake
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DENABLE_SANITIZERS=OFF
+
+    - name: Build SYSMON
+      run: cmake --build ${{github.workspace}}/build --config Release --parallel
+
+    - name: Run Tests
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C Release --output-on-failure
+
+  build-sanitized:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libncurses-dev libncursesw5-dev build-essential cmake
+
+    - name: Configure CMake (Debug + Sanitizers)
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZERS=ON
+
+    - name: Build SYSMON
+      run: cmake --build ${{github.workspace}}/build --config Debug --parallel
+
+    - name: Run Tests
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C Debug --output-on-failure
