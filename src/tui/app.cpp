@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include "screens/dashboard_screen.h"
 #include "screens/process_list_screen.h"
+#include "screens/connection_screen.h"
 Application::Application(SnapshotManager* snap_mgr) : snap_mgr_(snap_mgr), event_loop_(&screen_mgr_, &input_handler_) {}
 
 int Application::run(int argc, char** argv) {
@@ -23,6 +24,7 @@ int Application::run(int argc, char** argv) {
 
     register_screen("dashboard", std::make_unique<DashboardScreen>());
     register_screen("process_list", std::make_unique<ProcessListScreen>());
+    register_screen("connection", std::make_unique<ConnectionScreen>());
     switch_screen("dashboard");
 
     event_loop_.run(snap_mgr_);

@@ -139,6 +139,15 @@ void* collection_thread_func(void* arg) {
         mem_stats_read(&snap->memory);
         net_stats_read(&snap->network);
         
+        if (engine->collect_connections) {
+            if (!snap->connections) {
+                snap->connections = calloc(1, sizeof(ConnectionTableSnapshot));
+                snap->connections->capacity = 4096;
+                snap->connections->connections = calloc(4096, sizeof(ConnectionSnapshot));
+            }
+            net_connections_read(snap->connections);
+        }
+        
         if (engine->collect_disk_io) {
             if (!snap->disk) {
                 snap->disk = calloc(1, sizeof(DiskSnapshot));
@@ -185,6 +194,7 @@ int collection_engine_init(CollectionEngine* engine, SnapshotManager* mgr) {
     engine->collection_interval_ms = 1000;
     engine->process_max_count = 10000;
     engine->collect_disk_io = true;
+    engine->collect_connections = true;
     engine->running = false;
     
     engine->prev_cpu = calloc(256, sizeof(CpuCoreSnapshot));

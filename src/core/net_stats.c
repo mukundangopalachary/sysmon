@@ -66,3 +66,73 @@ int net_stats_read(NetworkSnapshot* snap) {
 
     return 0;
 }
+
+static void parse_hex_ip_port(const char* hex_str, char* out_buf, size_t out_size) {
+    unsigned int ip, port;
+    if (sscanf(hex_str, "%X:%X", &ip, &port) == 2) {
+        snprintf(out_buf, out_size, "%u.%u.%u.%u:%u",
+                 ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24) & 0xFF, port);
+    } else {
+        out_buf[0] = '\0';
+    }
+}
+
+static void parse_proc_net_file(const char* filepath, ConnectionTableSnapshot* snap, ConnectionType type) {
+    FILE* fp = fopen(filepath, "r");
+    if (!fp) return;
+    
+    char line[1024];
+    /* skip header */
+    if (!fgets(line, sizeof(line), fp)) {
+        fclose(fp);
+        return;
+    }
+    
+    while (fgets(line, sizeof(line), fp) && snap->num_connections < snap->capacity) {
+        char local_hex[64], remote_hex[64];
+        unsigned int state_hex, tx_q, rx_q, uid;
+        unsigned long long inode;
+        
+        if (sscanf(line, "%*d: %63s %63s %X %X:%X %*X:%*X %*X %d %*d %llu",
+                   local_hex, remote_hex, &state_hex, &tx_q, &rx_q, &uid, &inode) >= 7) {
+            
+            ConnectionSnapshot* conn = &snap->connections[snap->num_connections];
+            conn->type = type;
+            
+            if (type == CONN_TCP) {
+                switch(state_hex) {
+                    case 0x01: conn->state = CONN_ESTABLISHED; break;
+                    case 0x02: conn->state = CONN_SYN_SENT; break;
+                    case 0x0A: conn->state = CONN_LISTEN; break;
+                    case 0x08: conn->state = CONN_CLOSE_WAIT; break;
+                    case 0x06: conn->state = CONN_TIME_WAIT; break;
+                    default: conn->state = CONN_OTHER; break;
+                }
+            } else {
+                conn->state = CONN_OTHER;
+            }
+            
+            parse_hex_ip_port(local_hex, conn->local_addr, sizeof(conn->local_addr));
+            parse_hex_ip_port(remote_hex, conn->remote_addr, sizeof(conn->remote_addr));
+            
+            conn->pid = -1;
+            conn->uid = uid;
+            conn->inode = inode;
+            conn->tx_queue = tx_q;
+            conn->rx_queue = rx_q;
+            
+            snap->num_connections++;
+        }
+    }
+    fclose(fp);
+}
+
+int net_connections_read(ConnectionTableSnapshot* snap) {
+    if (!snap) return -1;
+    snap->num_connections = 0;
+    
+    parse_proc_net_file("/proc/net/tcp", snap, CONN_TCP);
+    parse_proc_net_file("/proc/net/udp", snap, CONN_UDP);
+    
+    return 0;
+}

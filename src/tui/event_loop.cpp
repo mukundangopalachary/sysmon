@@ -15,6 +15,7 @@ void EventLoop::run(SnapshotManager* snap_mgr) {
             bool handled = screen_mgr_->handle_input(ch);
             if (!handled) {
                 if (ch == 'p') screen_mgr_->switch_screen("process_list");
+                else if (ch == 'c') screen_mgr_->switch_screen("connection");
                 else if (ch == 'd' || ch == 27) screen_mgr_->switch_screen("dashboard"); // 27 = ESC
                 else input_handler_->handle(ch);
             }
