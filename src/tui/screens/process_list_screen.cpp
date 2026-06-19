@@ -24,4 +24,9 @@ void ProcessListScreen::on_resize() {
     int h, w;
     getmaxyx(stdscr, h, w);
     table_panel_.reset(new ProcessTablePanel(h, w, 0, 0));
+    table_panel_->on_process_selected = [this](int pid) {
+        if (this->on_process_selected) {
+            this->on_process_selected(pid);
+        }
+    };
 }

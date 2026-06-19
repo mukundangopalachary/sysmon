@@ -4,6 +4,11 @@ void ScreenManager::register_screen(const std::string& name, std::unique_ptr<Scr
     screens_[name] = std::move(screen);
 }
 
+Screen* ScreenManager::get_screen(const std::string& name) {
+    auto it = screens_.find(name);
+    return it != screens_.end() ? it->second.get() : nullptr;
+}
+
 void ScreenManager::switch_screen(const std::string& name) {
     auto it = screens_.find(name);
     if (it != screens_.end()) {

@@ -13,6 +13,7 @@ public:
     void render(const SystemSnapshot* snapshot);
     bool handle_input(int key);
     void on_resize();
+    Screen* get_screen(const std::string& name);
 private:
     std::unordered_map<std::string, std::unique_ptr<Screen>> screens_;
     Screen* current_screen_ = nullptr;

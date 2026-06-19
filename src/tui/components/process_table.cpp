@@ -55,6 +55,7 @@ void ProcessTablePanel::render(const SystemSnapshot* snapshot) {
         const ProcessSnapshot* p = procs[idx];
         if (idx == selected_row_) {
             wattron(window, A_REVERSE);
+            selected_pid_ = p->pid;
         }
         
         int total_seconds = (p->utime_ticks + p->stime_ticks) / clock_ticks;
@@ -82,6 +83,13 @@ void ProcessTablePanel::render(const SystemSnapshot* snapshot) {
 
 bool ProcessTablePanel::handle_input(int key) {
     switch (key) {
+        case '\n':
+        case '\r':
+        case KEY_ENTER:
+            if (on_process_selected && selected_pid_ != -1) {
+                on_process_selected(selected_pid_);
+            }
+            return true;
         case KEY_UP:
         case 'k':
             if (selected_row_ > 0) selected_row_--;

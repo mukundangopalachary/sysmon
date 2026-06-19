@@ -1,6 +1,7 @@
 #ifndef SYSMON_PROCESS_DETAIL_PANEL_H
 #define SYSMON_PROCESS_DETAIL_PANEL_H
 #include "components/panel.h"
+#include <functional>
 
 class ProcessDetailPanel : public Panel {
 public:
@@ -8,5 +9,11 @@ public:
     ~ProcessDetailPanel() override;
     void render(const SystemSnapshot* snapshot) override;
     bool handle_input(int key) override;
+
+    void open(int pid);
+    std::function<void()> on_close;
+
+private:
+    int pid_ = -1;
 };
 #endif
