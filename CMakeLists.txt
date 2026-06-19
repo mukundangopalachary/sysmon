@@ -48,6 +48,7 @@ set(CORE_SOURCES
     src/core/net_stats.c
     src/core/disk_stats.c
     src/core/process_list.c
+    src/core/process_sort.c
     src/core/proc_reader.c
     src/core/sysinfo.c
     src/core/snapshot_manager.c

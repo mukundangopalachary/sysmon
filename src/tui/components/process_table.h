@@ -3,6 +3,9 @@
 #include "components/panel.h"
 #include <functional>
 
+#include "process_sort.h"
+#include <string>
+
 class ProcessTablePanel : public Panel {
 public:
     ProcessTablePanel(int height, int width, int start_y, int start_x);
@@ -15,8 +18,11 @@ public:
 private:
     int selected_row_ = 0;
     int scroll_offset_ = 0;
-    int sort_column_ = 0;
-    bool sort_desc_ = true;
+    SortColumn sort_column_ = SORT_COL_CPU;
+    SortOrder sort_order_ = SORT_ORDER_DESC;
     int selected_pid_ = -1;
+    
+    bool filter_mode_ = false;
+    std::string filter_query_;
 };
 #endif
