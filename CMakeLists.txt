@@ -86,6 +86,8 @@ set(TUI_SOURCES
     src/tui/components/memory_panel.cpp
     src/tui/components/network_panel.cpp
     src/tui/components/disk_panel.cpp
+    src/tui/components/plugin_panel.cpp
+    src/tui/components/help_panel.cpp
     src/tui/components/process_table.cpp
     src/tui/components/connection_table.cpp
     src/tui/components/process_detail.cpp
@@ -109,6 +111,8 @@ set(TUI_HEADERS
     src/tui/components/memory_panel.h
     src/tui/components/network_panel.h
     src/tui/components/disk_panel.h
+    src/tui/components/plugin_panel.h
+    src/tui/components/help_panel.h
     src/tui/components/process_table.h
     src/tui/components/connection_table.h
     src/tui/components/process_detail.h

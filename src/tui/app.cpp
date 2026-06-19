@@ -14,7 +14,8 @@ int Application::run(int argc, char** argv) {
     cbreak();
     noecho();
     nodelay(stdscr, TRUE);
-    curs_set(0);
+    keypad(stdscr, TRUE);
+    curs_set(1);
 
     if (has_colors()) {
         start_color();
