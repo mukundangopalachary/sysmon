@@ -13,6 +13,16 @@ build:
 	@cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
 	@cd build && make -j$(nproc)
 
+tui:
+	@mkdir -p build
+	@cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
+	@cd build && make -j$(nproc) sysmon
+
+cli:
+	@mkdir -p build
+	@cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
+	@cd build && make -j$(nproc) sysmon-cli
+
 debug:
 	@mkdir -p build
 	@cd build && cmake .. -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZERS=ON

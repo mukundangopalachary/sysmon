@@ -145,14 +145,28 @@ target_link_libraries(sysmon_tui PUBLIC
 )
 
 # ── Main Executable ───────────────────────────────────────────
-add_executable(sysmon src/main.cpp)
+add_executable(sysmon src/main.cpp src/cli/cli_main.c)
+target_include_directories(sysmon PRIVATE ${CMAKE_SOURCE_DIR}/src/cli)
 target_link_libraries(sysmon PRIVATE sysmon_tui)
+
+add_executable(sysmon-cli src/cli/main.c src/cli/cli_main.c)
+target_include_directories(sysmon-cli PRIVATE ${CMAKE_SOURCE_DIR}/src/cli)
+target_link_libraries(sysmon-cli PRIVATE sysmon_core)
+
+# Create sysmon-tui alias
+add_custom_command(TARGET sysmon POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:sysmon> ${CMAKE_CURRENT_BINARY_DIR}/sysmon-tui
+)
 
 # ── Installation ──────────────────────────────────────────────
 include(GNUInstallDirs)
 
-install(TARGETS sysmon 
+install(TARGETS sysmon sysmon-cli 
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sysmon-tui
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 # Config file

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <string.h>
+#include "cli_main.h"
 
 void print_help() {
     std::cout << "sysmon v1.0.0 - Interactive System Monitor\n\n"
@@ -24,6 +25,25 @@ void print_help() {
 }
 
 int main(int argc, char** argv) {
+    bool is_cli = false;
+    
+    // Check if binary is invoked as sysmon-cli
+    if (strstr(argv[0], "sysmon-cli") != NULL) {
+        is_cli = true;
+    }
+    
+    // Or if first argument is a known CLI command
+    if (argc > 1) {
+        std::string arg = argv[1];
+        if (arg == "plugin" || arg == "config" || arg == "theme" || arg == "registry") {
+            is_cli = true;
+        }
+    }
+
+    if (is_cli) {
+        return cli_main(argc, argv);
+    }
+
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "-h" || arg == "--help") {
