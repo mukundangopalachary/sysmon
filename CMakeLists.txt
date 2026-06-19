@@ -80,6 +80,7 @@ set(TUI_SOURCES
     src/tui/theme.cpp
     src/tui/input_handler.cpp
     src/tui/screen_manager.cpp
+    src/tui/components/panel.cpp
     src/tui/components/header.cpp
     src/tui/components/cpu_panel.cpp
     src/tui/components/memory_panel.cpp
@@ -88,6 +89,7 @@ set(TUI_SOURCES
     src/tui/components/process_table.cpp
     src/tui/components/connection_table.cpp
     src/tui/components/process_detail.cpp
+    src/tui/screens/screen.cpp
     src/tui/screens/dashboard_screen.cpp
     src/tui/screens/process_list_screen.cpp
     src/tui/screens/connection_screen.cpp
