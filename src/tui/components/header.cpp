@@ -10,7 +10,7 @@ void HeaderPanel::render(const SystemSnapshot* snapshot) {
     
     clear_content();
     
-    uint64_t uptime_sec = snapshot->collection_timestamp_us / 1000000 - snapshot->system_info->boot_time_epoch;
+    uint64_t uptime_sec = snapshot->collection_timestamp_us / 1000000;
     
     mvwprintw(window, 0, 0, "Hostname: %s | OS: %s | Uptime: %s",
               snapshot->system_info->hostname,

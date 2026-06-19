@@ -31,8 +31,7 @@ int disk_stats_read(DiskSnapshot* snap) {
             }
             
             DiskStatsSnapshot* disk = &snap->devices[snap->num_devices];
-            strncpy(disk->device_name, name, sizeof(disk->device_name) - 1);
-            disk->device_name[sizeof(disk->device_name)-1] = '\0';
+            snprintf(disk->device_name, sizeof(disk->device_name), "%s", name);
             
             disk->read_ios = rio;
             disk->read_sectors = rsect;

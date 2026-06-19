@@ -28,8 +28,7 @@ int net_stats_read(NetworkSnapshot* snap) {
                    &tb, &tp, &te, &td, &tfifo, &tcol, &tcarrier, &tcomp) >= 17) {
             
             NetworkIfaceSnapshot* iface = &snap->interfaces[snap->num_interfaces];
-            strncpy(iface->name, name, sizeof(iface->name) - 1);
-            iface->name[sizeof(iface->name)-1] = '\0';
+            snprintf(iface->name, sizeof(iface->name), "%s", name);
             
             iface->rx_bytes = rb;
             iface->rx_packets = rp;
@@ -93,7 +92,7 @@ static void parse_proc_net_file(const char* filepath, ConnectionTableSnapshot* s
         unsigned int state_hex, tx_q, rx_q, uid;
         unsigned long long inode;
         
-        if (sscanf(line, "%*d: %63s %63s %X %X:%X %*X:%*X %*X %d %*d %llu",
+        if (sscanf(line, "%*d: %63s %63s %X %X:%X %*X:%*X %*X %u %*d %llu",
                    local_hex, remote_hex, &state_hex, &tx_q, &rx_q, &uid, &inode) >= 7) {
             
             ConnectionSnapshot* conn = &snap->connections[snap->num_connections];
