@@ -2,17 +2,17 @@
 #include <ncurses.h>
 
 ConnectionScreen::ConnectionScreen() {
-    int max_y, max_x;
-    getmaxyx(stdscr, max_y, max_x);
-    table_panel_ = std::make_unique<ConnectionTablePanel>(max_y, max_x, 0, 0);
+    on_resize();
 }
 
 ConnectionScreen::~ConnectionScreen() {}
 
 void ConnectionScreen::render(const SystemSnapshot* snapshot) {
-    if (table_panel_) {
-        table_panel_->render(snapshot);
-    }
+    if (!is_visible()) return;
+    if (header_panel_) header_panel_->render(snapshot);
+    if (table_panel_) table_panel_->render(snapshot);
+    if (help_panel_) help_panel_->render(snapshot);
+    doupdate();
 }
 
 bool ConnectionScreen::handle_input(int key) {
@@ -23,9 +23,19 @@ bool ConnectionScreen::handle_input(int key) {
 }
 
 void ConnectionScreen::on_resize() {
-    if (table_panel_) {
-        int max_y, max_x;
-        getmaxyx(stdscr, max_y, max_x);
-        table_panel_->on_resize(max_y, max_x, 0, 0);
-    }
+    int h, w;
+    getmaxyx(stdscr, h, w);
+    int header_h = 3;
+    int help_h = 3;
+    int table_h = h - header_h - help_h;
+    if (table_h < 0) table_h = 0;
+
+    if (!header_panel_) header_panel_.reset(new HeaderPanel(header_h, w, 0, 0));
+    else header_panel_->on_resize(header_h, w, 0, 0);
+
+    if (!table_panel_) table_panel_.reset(new ConnectionTablePanel(table_h, w, header_h, 0));
+    else table_panel_->on_resize(table_h, w, header_h, 0);
+
+    if (!help_panel_) help_panel_.reset(new HelpPanel(help_h, w, header_h + table_h, 0));
+    else help_panel_->on_resize(help_h, w, header_h + table_h, 0);
 }

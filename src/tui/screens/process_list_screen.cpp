@@ -8,9 +8,11 @@ ProcessListScreen::ProcessListScreen() {
 ProcessListScreen::~ProcessListScreen() {}
 
 void ProcessListScreen::render(const SystemSnapshot* snapshot) {
-    if (table_panel_) {
-        table_panel_->render(snapshot);
-    }
+    if (!is_visible()) return;
+    if (header_panel_) header_panel_->render(snapshot);
+    if (table_panel_) table_panel_->render(snapshot);
+    if (help_panel_) help_panel_->render(snapshot);
+    doupdate();
 }
 
 bool ProcessListScreen::handle_input(int key) {
@@ -23,10 +25,25 @@ bool ProcessListScreen::handle_input(int key) {
 void ProcessListScreen::on_resize() {
     int h, w;
     getmaxyx(stdscr, h, w);
-    table_panel_.reset(new ProcessTablePanel(h, w, 0, 0));
-    table_panel_->on_process_selected = [this](int pid) {
-        if (this->on_process_selected) {
-            this->on_process_selected(pid);
-        }
-    };
+    int header_h = 3;
+    int help_h = 3;
+    int table_h = h - header_h - help_h;
+    if (table_h < 0) table_h = 0;
+
+    if (!header_panel_) header_panel_.reset(new HeaderPanel(header_h, w, 0, 0));
+    else header_panel_->on_resize(header_h, w, 0, 0);
+
+    if (!table_panel_) {
+        table_panel_.reset(new ProcessTablePanel(table_h, w, header_h, 0));
+        table_panel_->on_process_selected = [this](int pid) {
+            if (this->on_process_selected) {
+                this->on_process_selected(pid);
+            }
+        };
+    } else {
+        table_panel_->on_resize(table_h, w, header_h, 0);
+    }
+
+    if (!help_panel_) help_panel_.reset(new HelpPanel(help_h, w, header_h + table_h, 0));
+    else help_panel_->on_resize(help_h, w, header_h + table_h, 0);
 }
