@@ -1,6 +1,6 @@
 # Contributing to Sysmon
 
-First off, thank you for considering contributing to Sysmon! We welcome contributions from everyone, whether it's reporting a bug, proposing a new feature, writing documentation, or submitting a Pull Request.
+First off, thank you for considering contributing to Sysmon! Contributions from everyone are welcome, whether it's reporting a bug, proposing a new feature, writing documentation, or submitting a Pull Request.
 
 ## How Can I Contribute?
 

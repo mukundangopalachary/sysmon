@@ -35,7 +35,7 @@ curl -fsSL https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/s
 
 ### Method 2: Download the Pre-Compiled Binary
 
-If you don't want to compile the project yourself, you can download the ready-to-use binary directly from our GitHub Releases page!
+If you don't want to compile the project yourself, you can download the ready-to-use binary directly from the GitHub Releases page!
 
 1. Go to the **Releases** tab on GitHub and download the `sysmon` executable.
 2. Make it executable:
@@ -92,7 +92,7 @@ See the [default configuration file](config/default.conf) for all available opti
 
 ## Development Roadmap
 
-The project is currently under active development. We are building it in 9 distinct phases. Check out the [Build Roadmap](docs/roadmap.md) to see our progress and upcoming milestones.
+The project is currently under active development. It is being built in 9 distinct phases. Check out the [Build Roadmap](docs/roadmap.md) to see the progress and upcoming milestones.
 
 ## License
 

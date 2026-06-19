@@ -772,7 +772,7 @@ void snapshot_manager_publish(SnapshotManager* mgr) {
 const SystemSnapshot* snapshot_manager_get_current(SnapshotManager* mgr) {
     /* 
      * Atomic load with acquire semantics.
-     * Ensures we see all the writes that happened before the swap.
+     * Ensures all writes that happened before the swap are visible.
      */
     int idx = __atomic_load(&mgr->current_index, __ATOMIC_ACQUIRE);
     

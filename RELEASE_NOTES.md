@@ -4,7 +4,7 @@
 
 **Release Date:** June 2026
 
-We are incredibly proud to announce the stable `v1.0.0` release of **Sysmon**! This marks the culmination of a highly structured, 9-phase development roadmap. Sysmon is designed to be the ultimate terminal-based system monitoring tool, combining the raw speed of a C data engine with the interactivity of a C++ `ncurses` UI.
+The stable `v1.0.0` release of **Sysmon** is now officially available! This marks the culmination of a highly structured, 9-phase development roadmap. Sysmon is designed to be the ultimate terminal-based system monitoring tool, combining the raw speed of a C data engine with the interactivity of a C++ `ncurses` UI.
 
 ### Key Features
 - **Atomic C Core Engine**: A lock-free, double-buffered architecture ensures that background data collection from `/proc` never blocks the main UI thread. 
@@ -19,4 +19,4 @@ We are incredibly proud to announce the stable `v1.0.0` release of **Sysmon**! T
 - Available pre-compiled statically-linked binaries attached directly to the GitHub release page.
 - Full support for `sudo make install` to enable global command-line execution from anywhere.
 
-Thank you to everyone who supported this project. We look forward to community plugins and feature extensions in the `v1.1` cycle!
+Thank you to everyone who supported this project. Community plugins and feature extensions are expected in the `v1.1` cycle!
