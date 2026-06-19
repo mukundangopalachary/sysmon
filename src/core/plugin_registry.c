@@ -70,7 +70,7 @@ bool registry_update(void) {
     get_registry_dir(dir, sizeof(dir));
     
     // Ensure registry directory exists
-    char cmd[1024];
+    char cmd[2048];
     snprintf(cmd, sizeof(cmd), "mkdir -p %s", dir);
     if (system(cmd) != 0) return false;
 
@@ -134,9 +134,11 @@ bool registry_install_plugin(const RegistryPlugin* plugin) {
     config_get_user_data_path(plugins_dir, sizeof(plugins_dir));
     strncat(plugins_dir, "/plugins", sizeof(plugins_dir) - strlen(plugins_dir) - 1);
 
-    char cmd[1024];
+    char cmd[2048];
     snprintf(cmd, sizeof(cmd), "mkdir -p %s", plugins_dir);
-    system(cmd);
+    if (system(cmd) != 0) {
+        printf("Failed to create plugins directory.\n");
+    }
 
     char tarball_path[512];
     snprintf(tarball_path, sizeof(tarball_path), "%s/%s-%s.tar.gz", plugins_dir, plugin->name, plugin->version);
@@ -160,7 +162,7 @@ bool registry_install_plugin(const RegistryPlugin* plugin) {
     }
 
     // Write version.lock
-    char lock_path[512];
+    char lock_path[1024];
     snprintf(lock_path, sizeof(lock_path), "%s/version.lock", target_dir);
     FILE* fp = fopen(lock_path, "w");
     if (fp) {
@@ -187,7 +189,7 @@ bool registry_uninstall_plugin(const char* name) {
         return false;
     }
 
-    char cmd[1024];
+    char cmd[2048];
     snprintf(cmd, sizeof(cmd), "rm -rf %s", target_dir);
     if (system(cmd) == 0) {
         printf("Successfully uninstalled %s.\n", name);
