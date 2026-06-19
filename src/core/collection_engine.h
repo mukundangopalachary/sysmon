@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include "types.h"
 #include "snapshot_manager.h"
+#include "plugin_manager.h"
 
 /*
  * COLLECTION ENGINE
@@ -41,6 +42,10 @@ struct CollectionEngine {
     NetworkIfaceSnapshot* prev_net; /* Per-interface previous bytes */
     uint64_t prev_timestamp_us;
     
+    /* Plugins */
+    PluginManager plugin_mgr;
+    PluginData plugin_data_buf;
+
     /* Callbacks */
     void (*on_collection_start)(void);
     void (*on_collection_complete)(SystemSnapshot* snapshot);

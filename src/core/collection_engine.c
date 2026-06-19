@@ -169,6 +169,9 @@ void* collection_thread_func(void* arg) {
         snap->collection_sequence++;
         snap->collection_duration_us = get_time_us() - start_time;
         
+        plugin_manager_collect(&engine->plugin_mgr, &engine->plugin_data_buf);
+        snap->plugin_data = &engine->plugin_data_buf;
+
         snapshot_manager_publish(engine->snapshot_mgr);
         
         if (engine->on_collection_complete) {
@@ -206,6 +209,9 @@ int collection_engine_init(CollectionEngine* engine, SnapshotManager* mgr) {
 int collection_engine_start(CollectionEngine* engine) {
     if (!engine || engine->running) return -1;
     
+    plugin_manager_init(&engine->plugin_mgr, "scripts/plugins");
+    plugin_manager_start_all(&engine->plugin_mgr);
+    
     engine->running = true;
     if (pthread_create(&engine->thread, NULL, collection_thread_func, engine) != 0) {
         engine->running = false;
@@ -220,6 +226,8 @@ int collection_engine_stop(CollectionEngine* engine) {
     
     engine->running = false;
     pthread_join(engine->thread, NULL);
+    
+    plugin_manager_stop_all(&engine->plugin_mgr);
     
     return 0;
 }
