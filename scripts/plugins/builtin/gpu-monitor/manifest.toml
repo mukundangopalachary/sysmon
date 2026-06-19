@@ -1,0 +1,13 @@
+[plugin]
+name = "gpu-monitor"
+version = "1.0.0"
+description = "Monitors GPU load and memory usage"
+author = "Sysmon Team"
+license = "MIT"
+
+requirements = []
+
+[[panes]]
+name = "Overview"
+type = "GAUGE"
+refresh_rate = 1000

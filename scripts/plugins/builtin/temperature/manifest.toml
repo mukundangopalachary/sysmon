@@ -1,0 +1,13 @@
+[plugin]
+name = "temperature"
+version = "1.0.0"
+description = "Monitors CPU temperature"
+author = "Sysmon Team"
+license = "MIT"
+
+requirements = []
+
+[[panes]]
+name = "Sensors"
+type = "GAUGE"
+refresh_rate = 1000

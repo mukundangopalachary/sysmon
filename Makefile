@@ -67,8 +67,7 @@ analyze:
 # Install plugins to user directory
 install-plugins:
 	@mkdir -p ~/.local/share/sysmon/plugins
-	@cp scripts/plugins/*.sh ~/.local/share/sysmon/plugins/
-	@chmod +x ~/.local/share/sysmon/plugins/*.sh
+	@cp -r scripts/plugins/builtin/* ~/.local/share/sysmon/plugins/
 	@echo "Plugins installed to ~/.local/share/sysmon/plugins/"
 
 # Generate tags for IDE

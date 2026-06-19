@@ -21,7 +21,8 @@ int cli_main(int argc, char** argv) {
     const char* command = argv[1];
 
     if (strcmp(command, "plugin") == 0) {
-        printf("Plugin command not yet implemented.\n");
+        extern int cli_plugin_main(int argc, char** argv);
+        return cli_plugin_main(argc, argv);
     } else if (strcmp(command, "config") == 0) {
         extern int cli_config_main(int argc, char** argv);
         return cli_config_main(argc, argv);
