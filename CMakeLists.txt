@@ -54,6 +54,7 @@ set(CORE_SOURCES
     src/core/collection_engine.c
     src/core/plugin_manager.c
     src/core/username_cache.c
+    src/bridge/sysmon_bridge.c
 )
 
 set(CORE_HEADERS
