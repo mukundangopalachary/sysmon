@@ -11,7 +11,7 @@ void HelpPanel::render(const SystemSnapshot* /*snapshot*/) {
     draw_border(false);
     draw_title("Keybindings");
     
-    mvwprintw(window, 1, 2, "[d] Dashboard   [p] Process List   [c] Connections   [q] Quit");
+    mvwprintw(window, 1, 2, "[d] Dashboard   [p] Process List   [n] Connections   [q] Quit");
     wrefresh(window);
 }
 

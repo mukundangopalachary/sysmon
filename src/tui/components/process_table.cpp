@@ -127,7 +127,7 @@ void ProcessTablePanel::render(const SystemSnapshot* snapshot) {
         mvwprintw(window, h - 2, 1, "Search: %s_", filter_query_.c_str());
     } else {
         char footer[128];
-        snprintf(footer, sizeof(footer), " Processes: %d/%d | </> Sort | i Invert | / Search ", (int)procs.size(), total_procs);
+        snprintf(footer, sizeof(footer), " Processes: %d/%d | <-/-> Sort | i Invert | / Search ", (int)procs.size(), total_procs);
         draw_footer(footer);
     }
     
@@ -163,10 +163,12 @@ bool ProcessTablePanel::handle_input(int key) {
         case KEY_NPAGE:
             selected_row_ += 10;
             return true;
+        case KEY_LEFT:
         case '<':
         case ',':
             sort_column_ = static_cast<SortColumn>((sort_column_ - 1 + 7) % 7);
             return true;
+        case KEY_RIGHT:
         case '>':
         case '.':
             sort_column_ = static_cast<SortColumn>((sort_column_ + 1) % 7);

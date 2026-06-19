@@ -23,7 +23,14 @@ void DashboardScreen::render(const SystemSnapshot* snapshot) {
     doupdate();
 }
 
-bool DashboardScreen::handle_input(int /*key*/) { return false; }
+bool DashboardScreen::handle_input(int key) {
+    for (auto& panel : panels_) {
+        if (panel->handle_input(key)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void DashboardScreen::on_resize() {
     panels_.clear();
