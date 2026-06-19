@@ -182,7 +182,12 @@ void* collection_thread_func(void* arg) {
         uint64_t interval_us = (uint64_t)engine->collection_interval_ms * 1000;
         
         if (elapsed_us < interval_us) {
-            usleep(interval_us - elapsed_us);
+            uint64_t remaining_us = interval_us - elapsed_us;
+            while (remaining_us > 0 && engine->running) {
+                uint64_t sleep_time = remaining_us > 50000 ? 50000 : remaining_us;
+                usleep(sleep_time);
+                remaining_us -= sleep_time;
+            }
         }
     }
     

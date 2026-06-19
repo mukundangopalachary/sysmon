@@ -27,7 +27,13 @@ For deep technical details, see the full [Architecture Documentation](docs/whole
 
 ## Installation
 
-### Method 1: Download the Pre-Compiled Binary (Easiest)
+### Method 1: The One-Liner (Recommended)
+If you have `git`, `cmake`, and `make` installed, you can download, compile, and install Sysmon globally with a single command:
+```bash
+curl -fsSL https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/install.sh | bash
+```
+
+### Method 2: Download the Pre-Compiled Binary
 
 If you don't want to compile the project yourself, you can download the ready-to-use binary directly from our GitHub Releases page!
 
@@ -41,7 +47,7 @@ If you don't want to compile the project yourself, you can download the ready-to
    sudo mv sysmon /usr/local/bin/
    ```
 
-### Method 2: Building from Source
+### Method 3: Building from Source (Manual)
 
 To compile the source code yourself, you will need `cmake`, `make`, `gcc/g++`, and `libncurses-dev`.
 
