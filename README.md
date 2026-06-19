@@ -30,7 +30,7 @@ For deep technical details, see the full [Architecture Documentation](docs/whole
 ### Method 1: The One-Liner (Recommended)
 If you have `git`, `cmake`, and `make` installed, you can download, compile, and install Sysmon globally with a single command:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/scripts/install.sh | bash
 ```
 
 ### Method 2: Download the Pre-Compiled Binary
