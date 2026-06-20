@@ -17,7 +17,7 @@ name = "docker-stats"
 version = "1.0.0"
 description = "Monitors active Docker containers"
 url = "https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/registry/packages/docker-stats-1.0.0.tar.gz"
-checksum = "3cfaaed022d1aa60fb11a04c0fe52306484c4ebb4666c4da9c4ffd2337c9a3d6"
+checksum = "3201cc5ca7008b20bfc9cf020dd8626cb9eb2f3f7312d327a1986a574615d9e3"
 
 [[plugin]]
 name = "network-latency"
