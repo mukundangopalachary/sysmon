@@ -7,6 +7,7 @@
 #include "plugin_protocol.h"
 #include "plugin_registry.h"
 #include "config_paths.h"
+#include <unistd.h>
 
 int cli_plugin_main(int argc, char** argv) {
     if (argc < 3) {
@@ -51,6 +52,25 @@ int cli_plugin_main(int argc, char** argv) {
             closedir(d);
         } else {
             printf("  (No plugins directory found at %s)\n", plugins_dir);
+        }
+        
+        printf("\nAvailable Plugins (from registry):\n");
+        PluginRegistry registry;
+        if (registry_load_local(&registry)) {
+            bool found_available = false;
+            for (int i = 0; i < registry.count; i++) {
+                char full_dir[1024];
+                snprintf(full_dir, sizeof(full_dir), "%s/%s", plugins_dir, registry.plugins[i].name);
+                if (access(full_dir, F_OK) != 0) { // Not installed
+                    printf("  [ ] %-15s v%s - %s\n", registry.plugins[i].name, registry.plugins[i].version, registry.plugins[i].description);
+                    found_available = true;
+                }
+            }
+            if (!found_available) {
+                printf("  (All registry plugins are currently installed)\n");
+            }
+        } else {
+            printf("  (No registry found. Run 'sysmon-cli registry update' to fetch available plugins)\n");
         }
     } else if (strcmp(subcmd, "enable") == 0 || strcmp(subcmd, "disable") == 0) {
         if (argc < 4) {

@@ -26,6 +26,7 @@ You can download the pre-compiled binary directly using `curl` and extract it:
 curl -LO https://github.com/mukundangopalachary/sysmon/releases/download/v2.0.1/sysmon-linux-x86_64.tar.gz
 tar -xzvf sysmon-linux-x86_64.tar.gz
 sudo mv sysmon sysmon-cli /usr/local/bin/
+rm sysmon-linux-x86_64.tar.gz
 ```
 
 ### 2. Build from Source
