@@ -34,6 +34,7 @@ struct CollectionEngine {
     
     /* State */
     bool running;
+    bool paused;
     pthread_t thread;
     SnapshotManager* snapshot_mgr;
     
@@ -59,5 +60,7 @@ int collection_engine_init(CollectionEngine* engine, SnapshotManager* mgr);
 int collection_engine_start(CollectionEngine* engine);
 int collection_engine_stop(CollectionEngine* engine);
 void collection_engine_destroy(CollectionEngine* engine);
+void collection_engine_pause(CollectionEngine* engine);
+void collection_engine_resume(CollectionEngine* engine);
 
 #endif /* SYSMON_COLLECTION_ENGINE_H */

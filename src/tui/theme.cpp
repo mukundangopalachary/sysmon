@@ -11,7 +11,7 @@ void ThemeManager::set_theme(const std::string& name) {
     if (!has_colors()) return;
 
     // By default, use -1 for transparent background if terminal supports default colors
-    int bg = -1;
+    int bg = (use_default_colors() == OK) ? -1 : COLOR_BLACK;
     
     if (name == "dracula") {
         init_pair(THEME_DEFAULT, COLOR_WHITE, bg);

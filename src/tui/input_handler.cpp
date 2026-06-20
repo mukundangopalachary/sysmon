@@ -3,9 +3,10 @@
 #include <ncurses.h>
 #include <string.h>
 
-void InputHandler::init(SysmonConfig* cfg, ScreenManager* screen_mgr) {
+void InputHandler::init(SysmonConfig* cfg, ScreenManager* screen_mgr, CollectionEngine* engine) {
     cfg_ = cfg;
     screen_mgr_ = screen_mgr;
+    engine_ = engine;
 }
 
 int InputHandler::parse_key(const char* key_str) {
@@ -33,6 +34,14 @@ InputResult InputHandler::handle(int key) {
     
     if (key == k_quit || key == 'q' || key == 'Q') {
         return InputResult::QUIT;
+    }
+    
+    if (key == 'p' || key == 'P') {
+        if (engine_) {
+            if (engine_->paused) collection_engine_resume(engine_);
+            else collection_engine_pause(engine_);
+        }
+        return InputResult::HANDLED;
     }
     
     if (key == k_dash) { screen_mgr_->switch_screen("dashboard"); return InputResult::HANDLED; }

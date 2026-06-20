@@ -6,22 +6,33 @@
 #include <string>
 #include <string.h>
 #include "cli_main.h"
+#include <unistd.h>
+#include <fcntl.h>
 
 void print_help() {
     std::cout << "sysmon v1.0.0 - Interactive System Monitor\n\n"
-              << "Usage: sysmon [OPTIONS]\n\n"
-              << "Options:\n"
+              << "Usage:\n"
+              << "  sysmon [OPTIONS]            (Starts the TUI)\n"
+              << "  sysmon <command> [args]     (Runs CLI commands)\n\n"
+              << "TUI Options:\n"
               << "  -h, --help     Show this help message and exit\n"
-              << "  -v, --version  Show version information and exit\n"
-              << "  -d, --debug    Enable debug logging (not yet implemented)\n\n"
-              << "Interactive Keybindings:\n"
-              << "  [d] Dashboard view\n"
-              << "  [p] Process list view\n"
-              << "  [c] Connections view\n"
-              << "  [q] Quit application\n"
+              << "  -v, --version  Show version information and exit\n\n"
+              << "CLI Commands:\n"
+              << "  plugin         Manage plugins (install, list, update)\n"
+              << "  config         Manage configuration\n"
+              << "  theme          Manage UI themes\n"
+              << "  registry       Sync plugin registry\n\n"
+              << "TUI Interactive Keybindings:\n"
+              << "  [F1] Dashboard view\n"
+              << "  [F2] Process list view\n"
+              << "  [F3] Connections view\n"
+              << "  [F4] Plugins view\n"
+              << "  [p]  Pause/Resume data collection\n"
+              << "  [/]  Search/Filter mode in tables\n"
+              << "  [q]  Quit application\n"
               << "  [Up/Down/j/k] Navigate tables\n"
               << "  [ENTER] View process details\n"
-              << "  [ESC] Return from details\n";
+              << "  [ESC] Return from details/cancel search\n";
 }
 
 int main(int argc, char** argv) {
@@ -61,6 +72,30 @@ int main(int argc, char** argv) {
         }
     }
 
+    // Check if /proc is mounted
+    if (access("/proc/stat", R_OK) != 0) {
+        std::cerr << "Error: /proc is not accessible. Sysmon requires a mounted procfs.\n";
+        return 1;
+    }
+
+    // Single-instance lock file
+    char lock_file[256];
+    snprintf(lock_file, sizeof(lock_file), "/tmp/sysmon_%d.lock", getuid());
+    int lock_fd = open(lock_file, O_RDWR | O_CREAT, 0600);
+    if (lock_fd < 0) {
+        std::cerr << "Error: Could not create lock file " << lock_file << "\n";
+        return 1;
+    }
+    struct flock fl;
+    memset(&fl, 0, sizeof(fl));
+    fl.l_type = F_WRLCK;
+    fl.l_whence = SEEK_SET;
+    if (fcntl(lock_fd, F_SETLK, &fl) == -1) {
+        std::cerr << "Error: Another instance of sysmon is already running for this user.\n";
+        close(lock_fd);
+        return 1;
+    }
+
     SnapshotManager snap_mgr;
     snapshot_manager_init(&snap_mgr);
 
@@ -68,7 +103,7 @@ int main(int argc, char** argv) {
     collection_engine_init(&engine, &snap_mgr);
     collection_engine_start(&engine);
 
-    Application app(&snap_mgr);
+    Application app(&snap_mgr, &engine);
     int result = app.run(argc, argv);
 
     collection_engine_stop(&engine);

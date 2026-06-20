@@ -4,7 +4,7 @@
 
 void EventLoop::run(SnapshotManager* snap_mgr) {
     running_ = true;
-    int counter = 0;
+    int counter = 1000; // Force immediate render on first tick
     while (running_) {
         int ch = getch();
         if (ch == 'q') {
@@ -12,6 +12,18 @@ void EventLoop::run(SnapshotManager* snap_mgr) {
             break;
         }
         if (ch != ERR) {
+            if (ch == KEY_RESIZE) {
+                if (COLS < 80 || LINES < 24) {
+                    // We just ignore rendering or exit. Exiting is harsh.
+                    // Let's just do the resize and hope panels clamp gracefully,
+                    // but we will at least clear the screen.
+                    erase();
+                }
+                screen_mgr_->on_resize();
+                counter = 1000;
+                continue;
+            }
+            
             bool handled = screen_mgr_->handle_input(ch);
             if (!handled) {
                 InputResult result = input_handler_->handle(ch);

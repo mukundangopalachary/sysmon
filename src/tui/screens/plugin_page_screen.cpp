@@ -21,6 +21,8 @@ void PluginPageScreen::set_config(const SysmonConfig* cfg) {
 void PluginPageScreen::render(const SystemSnapshot* snapshot) {
     if (!is_visible()) return;
     
+    // We do NOT werase(stdscr) here to prevent full-screen flashing.
+    
     if (header_panel_) header_panel_->render(snapshot);
     if (help_panel_) help_panel_->render(snapshot);
 
@@ -59,57 +61,65 @@ void PluginPageScreen::render(const SystemSnapshot* snapshot) {
         return;
     }
     
-    // Calculate layout
+    // Calculate total layout and handle Pane-based scrolling
+    int selected_pane_y = 0;
+    for (int i = 0; i < selected_plugin_idx_; ++i) {
+        selected_pane_y += plugin_panes_[i]->get_desired_height(snapshot);
+    }
+    int selected_pane_h = plugin_panes_[selected_plugin_idx_]->get_desired_height(snapshot);
+
+    // Ensure selected pane is visible by adjusting scroll_offset_ to align with pane boundaries
+    if (selected_pane_y < scroll_offset_) {
+        scroll_offset_ = selected_pane_y; // align top
+    } else if (selected_pane_y + selected_pane_h > scroll_offset_ + content_h) {
+        scroll_offset_ = (selected_pane_y + selected_pane_h) - content_h; // align bottom
+    }
+
+    // Since ncurses doesn't support clipping windows, we MUST ensure draw_y >= content_start_y
+    // We will align the rendering so that we only draw panes that fall fully or partially in view.
+    // Actually, to avoid negative mvwin, we just cap draw_y to content_start_y, but that squishes it.
+    // Since we use wnoutrefresh, if a window is partially offscreen, we just wresize it!
+    
     int current_y = 0;
-    
-    // Process constraints
-    if (selected_plugin_idx_ >= (int)plugin_panes_.size()) {
-        selected_plugin_idx_ = plugin_panes_.size() - 1;
-    }
-    if (selected_plugin_idx_ < 0) {
-        selected_plugin_idx_ = 0;
-    }
-    
-    // Render
     for (size_t i = 0; i < plugin_panes_.size(); ++i) {
         auto& pane = plugin_panes_[i];
         pane->set_enabled(pm->plugins[i].enabled);
         
         int pane_h = pane->get_desired_height(snapshot);
+        int draw_y = content_start_y + current_y - scroll_offset_;
         
-        // Is it visible?
-        if (current_y + pane_h > scroll_offset_ && current_y < scroll_offset_ + content_h) {
-            int draw_y = content_start_y + current_y - scroll_offset_;
-            // We just let the pane render normally and rely on ncurses clipping if it extends past screen,
-            // or we manually adjust its dimensions.
-            // For simplicity, we just set its y and render
-            pane->on_resize(pane_h, max_x, draw_y, 0);
+        // Calculate visibility and clipping
+        if (draw_y + pane_h > content_start_y && draw_y < content_end_y) {
+            int actual_y = draw_y < content_start_y ? content_start_y : draw_y;
+            int actual_h = pane_h;
             
-            if (i == (size_t)selected_plugin_idx_) {
-                pane->on_focus();
-            } else {
-                pane->on_blur();
+            // Clip top
+            if (draw_y < content_start_y) {
+                actual_h -= (content_start_y - draw_y);
+            }
+            // Clip bottom
+            if (actual_y + actual_h > content_end_y) {
+                actual_h = content_end_y - actual_y;
             }
             
-            pane->render(snapshot);
+            if (actual_h > 0) {
+                pane->on_resize(actual_h, max_x, actual_y, 0);
+                if (i == (size_t)selected_plugin_idx_) pane->on_focus();
+                else pane->on_blur();
+                pane->render(snapshot);
+            }
         }
-        
         current_y += pane_h;
     }
     
-    // Ensure selected is visible
-    int selected_start_y = 0;
-    for (size_t i = 0; i < plugin_panes_.size(); ++i) {
-        if (i == (size_t)selected_plugin_idx_) break;
-        selected_start_y += plugin_panes_[i]->get_desired_height(snapshot);
+    // Clear any remaining space at the bottom of the content area to prevent ghost trails
+    int last_draw_y = content_start_y + current_y - scroll_offset_;
+    if (last_draw_y < content_start_y) last_draw_y = content_start_y;
+    for (int y = last_draw_y; y < content_end_y; ++y) {
+        move(y, 0);
+        clrtoeol();
     }
-    int selected_end_y = selected_start_y + (plugin_panes_.empty() ? 0 : plugin_panes_[selected_plugin_idx_]->get_desired_height(snapshot));
-    
-    if (selected_start_y < scroll_offset_) {
-        scroll_offset_ = selected_start_y;
-    } else if (selected_end_y > scroll_offset_ + content_h) {
-        scroll_offset_ = selected_end_y - content_h;
-    }
+    wnoutrefresh(stdscr);
     
     // Draw Plugin-specific keybindings
     move(content_end_y, 0);

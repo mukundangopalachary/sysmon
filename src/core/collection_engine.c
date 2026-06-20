@@ -142,6 +142,11 @@ void* collection_thread_func(void* arg) {
     bool first_run = true;
     
     while (engine->running) {
+        if (engine->paused) {
+            usleep(100000); // Sleep for 100ms when paused
+            continue;
+        }
+        
         uint64_t start_time = get_time_us();
         
         if (engine->on_collection_start) {
@@ -285,4 +290,12 @@ void collection_engine_destroy(CollectionEngine* engine) {
         free(engine->prev_net);
         engine->prev_net = NULL;
     }
+}
+
+void collection_engine_pause(CollectionEngine* engine) {
+    if (engine) engine->paused = true;
+}
+
+void collection_engine_resume(CollectionEngine* engine) {
+    if (engine) engine->paused = false;
 }

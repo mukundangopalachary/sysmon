@@ -5,7 +5,9 @@
 #include "screens/connection_screen.h"
 #include "screens/process_detail_screen.h"
 #include "screens/plugin_page_screen.h"
-Application::Application(SnapshotManager* snap_mgr) : snap_mgr_(snap_mgr), event_loop_(&screen_mgr_, &input_handler_) {}
+
+Application::Application(SnapshotManager* snap_mgr, CollectionEngine* engine) 
+    : snap_mgr_(snap_mgr), engine_(engine), event_loop_(&screen_mgr_, &input_handler_) {}
 
 int Application::run(int argc, char** argv) {
     (void)argc;
@@ -36,8 +38,11 @@ int Application::run(int argc, char** argv) {
     theme_mgr_.set_theme(cfg_.display.theme);
     theme_mgr_.init();
     
+    // Apply default theme colors to the main screen
+    bkgd(COLOR_PAIR(THEME_DEFAULT) | ' ');
+    
     screen_mgr_.set_config(&cfg_);
-    input_handler_.init(&cfg_, &screen_mgr_);
+    input_handler_.init(&cfg_, &screen_mgr_, engine_);
 
     register_screen("dashboard", std::make_unique<DashboardScreen>());
     register_screen("connection", std::make_unique<ConnectionScreen>());

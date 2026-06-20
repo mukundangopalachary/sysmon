@@ -20,7 +20,7 @@ extern "C" {
 
 class Application {
 public:
-    Application(SnapshotManager* snap_mgr);
+    Application(SnapshotManager* snap_mgr, CollectionEngine* engine);
     int run(int argc, char** argv);
 
 private:
@@ -28,6 +28,7 @@ private:
     void switch_screen(const std::string& name);
 
     SnapshotManager* snap_mgr_;
+    CollectionEngine* engine_;
     SysmonConfig cfg_;
     ScreenManager screen_mgr_;
     InputHandler input_handler_;
