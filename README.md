@@ -1,99 +1,129 @@
-# SYSMON - System Resource Monitor
+# Sysmon 🚀
 
-SYSMON is a high-performance, terminal-based system resource monitor written in C and C++. It provides real-time insights into system health, including CPU, memory, network, disk I/O, process lists, and active network connections.
+**Sysmon** is a highly optimized, lightning-fast interactive system resource monitor and command-line management tool built in C and C++. It features an interactive Terminal UI (TUI) powered by `ncurses`, real-time process monitoring, customizable dashboards, and a fully extensible bash script plugin system!
 
-## Features
+---
 
-- **Real-Time Dashboard**: Instant overview of CPU per-core usage, memory gauge, disk I/O, and network throughput.
-- **Interactive Process Manager**: Sort, filter, and drill down into process details (environment, file descriptors, CPU/Mem usage) with Vim-style keybindings.
-- **Live Network Connections**: View active TCP/UDP/Unix sockets mapped to their owning processes.
-- **Double-Buffered Architecture**: Ensures the UI thread never blocks while the background thread collects `/proc` data.
-- **Extensible Plugin System**: First-class support for Bash scripts to collect external metrics (e.g., GPU usage, temperature sensors) via a simple line protocol.
-- **Highly Configurable**: Custom UI themes, update intervals, and data collection scopes.
+## ✨ Features
 
-## Architecture
+- **Interactive TUI**: Navigate between Dashboard, Process List, and Connections screens seamlessly.
+- **Lightning Fast**: Built in C/C++ with a multithreaded architecture. Minimal CPU overhead.
+- **Double-Buffered State**: Guarantees tear-free rendering while asynchronous data collection runs in the background.
+- **Global Search & Filter**: Instantly filter processes or network connections on the fly (press `/`).
+- **Pause & Resume**: Stop the background data collection at any time to inspect volatile processes without them jumping around (press `p`).
+- **Customizable Themes**: Supports dynamic theme swapping (`dracula`, `default`, etc.) via TOML configurations.
+- **Plugin System**: Write plugins in standard Bash scripts. Integrate things like Docker stats, Network latency, or GPU loads directly into your sysmon dashboard!
 
-SYSMON uses a multi-threaded, bifurcated architecture:
-1. **Core Data Engine (C11)**: A highly optimized background thread that iterates through `/proc` and `/sys` to gather data into immutable memory snapshots.
-2. **TUI Framework (C++17)**: An event-driven rendering thread powered by `ncurses` that consumes the snapshots without blocking and provides interactive views.
+---
 
-For deep technical details, see the full [Architecture Documentation](docs/v1-architecture.md).
+## 🛠️ Installation
 
-## Prerequisites
+### Prerequisites
+- CMake (3.15+)
+- GCC/G++ or Clang (C11 and C++17 support)
+- Ncurses Library (`libncurses-dev` or `ncurses-devel`)
 
-- **Compiler**: GCC or Clang (C11 and C++17 support required)
-- **Build System**: CMake (>= 3.15) and Make
-- **Libraries**: `ncurses` development headers (`libncurses-dev` on Debian/Ubuntu, `ncurses-devel` on RHEL/Fedora)
+### Build & Install
 
-## Installation
-
-### Method 1: The One-Liner (Recommended)
-If you have `git`, `cmake`, and `make` installed, you can download, compile, and install Sysmon globally with a single command:
-```bash
-curl -fsSL https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/scripts/install.sh | bash
-```
-
-### Method 2: Download the Pre-Compiled Binary
-
-If you don't want to compile the project yourself, you can download the ready-to-use binary directly from the GitHub Releases page!
-
-1. Go to the **Releases** tab on GitHub and download the `sysmon` executable.
-2. Make it executable:
+1. Clone the repository:
    ```bash
-   chmod +x sysmon
-   ```
-3. Move it to your system binaries so you can run it from anywhere:
-   ```bash
-   sudo mv sysmon /usr/local/bin/
+   git clone https://github.com/yourusername/sysmon.git
+   cd sysmon
    ```
 
-### Method 3: Building from Source (Manual)
+2. Build the application using CMake:
+   ```bash
+   mkdir build && cd build
+   cmake ..
+   make
+   ```
 
-To compile the source code yourself, you will need `cmake`, `make`, `gcc/g++`, and `libncurses-dev`.
+3. Install the application and default configs (Optional):
+   ```bash
+   sudo make install
+   ```
 
+*(Alternatively, you can just run `make` in the root directory if you want to use the included Makefile wrapper).*
+
+---
+
+## 🚀 Usage
+
+Sysmon acts as a smart "fat binary". It can launch both the visual dashboard (TUI) and run headless administrative commands (CLI).
+
+### Launching the Dashboard (TUI)
+
+Just run `sysmon` with no arguments:
 ```bash
-# 1. Clone the repository
-git clone https://github.com/mukundangopalachary/sysmon.git
-cd sysmon
-
-# 2. Build the project
-make build
-
-# 3. Install globally (this allows you to run `sysmon` from anywhere)
-sudo make install
+sysmon
 ```
 
-Other available Make targets:
-- `make debug`: Build with address and undefined behavior sanitizers enabled.
-- `make test`: Run the test suite.
-- `make install`: Install to system paths (`/usr/local/bin` and config files to `/usr/local/share`).
+**Interactive Keybindings:**
+- `F1` : Dashboard View
+- `F2` : Process List View
+- `F3` : Active Connections View
+- `F4` : Plugins View
+- `p`  : Pause/Resume data collection
+- `/`  : Enter Search/Filter mode inside tables
+- `ENTER` : Inspect detailed metrics for a specific process
+- `ESC`: Return to the previous screen or clear a search filter
+- `q`  : Quit Sysmon
 
-## Usage
+### Using the CLI
 
-Simply type `sysmon` in your terminal to launch the dashboard.
+You can interact with sysmon's configuration and plugin registry directly from your terminal:
 
-**Keybindings:**
-- `[d]` Dashboard View
-- `[p]` Process List
-- `[c]` Connections View
-- `[q]` Quit Application
-- `[Up/Down]` Navigate lists
-- `[ENTER]` View deeper process details
-- `[ESC]` Return from details
+```bash
+# Manage Plugins
+sysmon plugin install github.com/user/custom-gpu-plugin
+sysmon plugin list
+sysmon plugin remove docker-stats
 
-You can also run `sysmon --help` to view CLI options.
+# Sync the registry with your TOML config
+sysmon registry sync
+```
 
-SYSMON looks for configuration files in the following order:
-1. Command-line arguments (`--interval 500`, etc.)
-2. `~/.config/sysmon/config`
-3. `/etc/sysmon/default.conf`
+---
 
-See the [default configuration file](config/default.conf) for all available options.
+## ⚙️ Configuration
 
-## Development Roadmap
+Sysmon uses TOML for configuration. After installation, your config file is located at `~/.config/sysmon/sysmon.toml`.
 
-The project is currently under active development. It is being built in 9 distinct phases. Check out the [Build Roadmap](docs/v1-roadmap.md) to see the progress and upcoming milestones.
+Example `sysmon.toml`:
+```toml
+[collection]
+interval_ms = 1000
 
-## License
+[display]
+theme = "dracula"
+refresh_rate_hz = 30
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+[keybindings]
+dashboard = "F1"
+process_list = "F2"
+
+[plugins]
+auto_update = true
+repos = [
+    "github.com/sysmon-org/docker-stats",
+]
+```
+
+---
+
+## 🧪 Testing
+
+To run the internal CTest suite to verify parsers and memory safety:
+
+```bash
+cd build
+cmake ..
+make
+ctest --output-on-failure
+```
+
+---
+
+## 📜 License
+
+Sysmon is open-sourced software licensed under the MIT license.
