@@ -164,7 +164,7 @@ bool registry_install_plugin(const RegistryPlugin* plugin) {
     char target_dir[512];
     snprintf(target_dir, sizeof(target_dir), "%s/%s", plugins_dir, plugin->name);
     
-    snprintf(cmd, sizeof(cmd), "mkdir -p %s && tar -xzf %s -C %s", target_dir, tarball_path, target_dir);
+    snprintf(cmd, sizeof(cmd), "mkdir -p %s && tar -xzf %s -C %s --strip-components=1", target_dir, tarball_path, target_dir);
     if (system(cmd) != 0) {
         printf("Failed to extract plugin.\n");
         remove(tarball_path);

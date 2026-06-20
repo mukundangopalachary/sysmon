@@ -16,6 +16,9 @@ PluginPageScreen::~PluginPageScreen() {}
 void PluginPageScreen::render(const SystemSnapshot* snapshot) {
     if (!is_visible()) return;
     
+    werase(stdscr);
+    wnoutrefresh(stdscr);
+    
     if (header_panel_) header_panel_->render(snapshot);
     if (help_panel_) help_panel_->render(snapshot);
 
