@@ -1,10 +1,10 @@
-# Sysmon 🚀
+# Sysmon
 
 **Sysmon** is a highly optimized, lightning-fast interactive system resource monitor and command-line management tool built in C and C++. It features an interactive Terminal UI (TUI) powered by `ncurses`, real-time process monitoring, customizable dashboards, and a fully extensible bash script plugin system!
 
 ---
 
-## ✨ Features
+## Features
 
 - **Interactive TUI**: Navigate between Dashboard, Process List, and Connections screens seamlessly.
 - **Lightning Fast**: Built in C/C++ with a multithreaded architecture. Minimal CPU overhead.
@@ -16,7 +16,7 @@
 
 ---
 
-## 🛠️ Installation
+##Installation
 
 ### Prerequisites
 - CMake (3.15+)
@@ -47,7 +47,7 @@
 
 ---
 
-## 🚀 Usage
+## Usage
 
 Sysmon acts as a smart "fat binary". It can launch both the visual dashboard (TUI) and run headless administrative commands (CLI).
 
@@ -85,7 +85,7 @@ sysmon registry sync
 
 ---
 
-## ⚙️ Configuration
+##Configuration
 
 Sysmon uses TOML for configuration. After installation, your config file is located at `~/.config/sysmon/sysmon.toml`.
 
@@ -111,7 +111,7 @@ repos = [
 
 ---
 
-## 🧪 Testing
+## Testing
 
 To run the internal CTest suite to verify parsers and memory safety:
 
@@ -124,6 +124,6 @@ ctest --output-on-failure
 
 ---
 
-## 📜 License
+## License
 
 Sysmon is open-sourced software licensed under the MIT license.
