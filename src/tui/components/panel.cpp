@@ -6,6 +6,7 @@ Panel::Panel(int height, int width, int start_y, int start_x)
       start_y_(start_y), start_x_(start_x), has_focus_(false) {
     if (height > 0 && width > 0) {
         window = newwin(height, width, start_y, start_x);
+        wbkgd(window, COLOR_PAIR(THEME_DEFAULT) | ' ');
     }
 }
 
@@ -19,15 +20,22 @@ void Panel::on_focus() { has_focus_ = true; }
 void Panel::on_blur() { has_focus_ = false; }
 
 void Panel::on_resize(int height, int width, int start_y, int start_x) {
+    if (height_ == height && width_ == width && start_y_ == start_y && start_x_ == start_x && window != nullptr) {
+        return; // No change, avoid aggressive ncurses redraw
+    }
+    
     height_ = height;
     width_ = width;
     start_y_ = start_y;
     start_x_ = start_x;
+    
     if (window != nullptr) {
         wresize(window, height > 0 ? height : 1, width > 0 ? width : 1);
         mvwin(window, start_y, start_x);
+        wbkgd(window, COLOR_PAIR(THEME_DEFAULT) | ' ');
     } else if (height > 0 && width > 0) {
         window = newwin(height, width, start_y, start_x);
+        wbkgd(window, COLOR_PAIR(THEME_DEFAULT) | ' ');
     }
 }
 
