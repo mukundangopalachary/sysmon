@@ -14,6 +14,7 @@ public:
     void render(const SystemSnapshot* snapshot) override;
     bool handle_input(int key) override;
     void on_resize() override;
+    void set_config(const SysmonConfig* cfg) override;
     
     std::function<void(int)> on_process_selected;
 

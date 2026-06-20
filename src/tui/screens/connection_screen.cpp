@@ -7,6 +7,11 @@ ConnectionScreen::ConnectionScreen() {
 
 ConnectionScreen::~ConnectionScreen() {}
 
+void ConnectionScreen::set_config(const SysmonConfig* cfg) {
+    cfg_ = cfg;
+    if (help_panel_) help_panel_->set_config(cfg);
+}
+
 void ConnectionScreen::render(const SystemSnapshot* snapshot) {
     if (!is_visible()) return;
     if (header_panel_) header_panel_->render(snapshot);

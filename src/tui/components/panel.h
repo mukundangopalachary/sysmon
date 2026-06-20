@@ -2,6 +2,7 @@
 #define SYSMON_PANEL_H
 #include <ncurses.h>
 #include "sysmon_bridge.h"
+#include "config_parser.h"
 
 class Panel {
 public:
@@ -12,6 +13,7 @@ public:
     virtual void on_blur();
     virtual void on_resize(int height, int width, int start_y, int start_x);
     virtual bool handle_input(int key);
+    virtual void set_config(const SysmonConfig* cfg) { (void)cfg; }
     void draw_border(bool focused = false);
     void draw_title(const char* title);
     void draw_footer(const char* text);

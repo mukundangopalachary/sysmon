@@ -7,6 +7,11 @@ ProcessListScreen::ProcessListScreen() {
 
 ProcessListScreen::~ProcessListScreen() {}
 
+void ProcessListScreen::set_config(const SysmonConfig* cfg) {
+    cfg_ = cfg;
+    if (help_panel_) help_panel_->set_config(cfg);
+}
+
 void ProcessListScreen::render(const SystemSnapshot* snapshot) {
     if (!is_visible()) return;
     if (header_panel_) header_panel_->render(snapshot);

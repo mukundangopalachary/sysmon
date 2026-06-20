@@ -13,11 +13,13 @@ PluginPageScreen::PluginPageScreen() {
 
 PluginPageScreen::~PluginPageScreen() {}
 
+void PluginPageScreen::set_config(const SysmonConfig* cfg) {
+    cfg_ = cfg;
+    if (help_panel_) help_panel_->set_config(cfg);
+}
+
 void PluginPageScreen::render(const SystemSnapshot* snapshot) {
     if (!is_visible()) return;
-    
-    werase(stdscr);
-    wnoutrefresh(stdscr);
     
     if (header_panel_) header_panel_->render(snapshot);
     if (help_panel_) help_panel_->render(snapshot);
@@ -110,6 +112,8 @@ void PluginPageScreen::render(const SystemSnapshot* snapshot) {
     }
     
     // Draw Plugin-specific keybindings
+    move(content_end_y, 0);
+    clrtoeol();
     attron(A_DIM);
     mvprintw(content_end_y, 2, "[j/k] Navigate  [Enter] Expand  [e] Enable/Disable  [c] Edit Config  [r] Refresh");
     attroff(A_DIM);

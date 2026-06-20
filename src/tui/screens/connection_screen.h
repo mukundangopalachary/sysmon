@@ -13,6 +13,7 @@ public:
     void render(const SystemSnapshot* snapshot) override;
     bool handle_input(int key) override;
     void on_resize() override;
+    void set_config(const SysmonConfig* cfg) override;
 
 private:
     std::unique_ptr<HeaderPanel> header_panel_;
