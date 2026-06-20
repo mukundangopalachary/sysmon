@@ -24,10 +24,9 @@ void Panel::on_resize(int height, int width, int start_y, int start_x) {
     start_y_ = start_y;
     start_x_ = start_x;
     if (window != nullptr) {
-        delwin(window);
-        window = nullptr;
-    }
-    if (height > 0 && width > 0) {
+        wresize(window, height > 0 ? height : 1, width > 0 ? width : 1);
+        mvwin(window, start_y, start_x);
+    } else if (height > 0 && width > 0) {
         window = newwin(height, width, start_y, start_x);
     }
 }

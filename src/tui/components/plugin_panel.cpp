@@ -15,7 +15,7 @@ void PluginPanel::render(const SystemSnapshot* snapshot) {
     
     if (!snapshot || !snapshot->plugin_data) {
         mvwprintw(window, 1, 2, "No plugin data");
-        wrefresh(window);
+        wnoutrefresh(window);
         return;
     }
     
@@ -25,5 +25,5 @@ void PluginPanel::render(const SystemSnapshot* snapshot) {
         mvwprintw(window, 1 + i, 2, "%.*s", width_ - 4, pdata->metrics[i]);
     }
     
-    wrefresh(window);
+    wnoutrefresh(window);
 }

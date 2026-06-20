@@ -12,6 +12,7 @@ PluginPaneComponent::PluginPaneComponent(int height, int width, int start_y, int
 PluginPaneComponent::~PluginPaneComponent() {}
 
 void PluginPaneComponent::render(const SystemSnapshot* snapshot) {
+    werase(window);
     draw_border(has_focus_);
     
     char title[128];
@@ -21,7 +22,10 @@ void PluginPaneComponent::render(const SystemSnapshot* snapshot) {
              enabled_ ? "ON" : "OFF");
     draw_title(title);
     
-    if (!expanded_) return;
+    if (!expanded_) {
+        wnoutrefresh(window);
+        return;
+    }
     
     // Find PluginInstance
     PluginInstance* p_inst = nullptr;

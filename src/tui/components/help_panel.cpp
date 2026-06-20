@@ -21,7 +21,7 @@ void HelpPanel::render(const SystemSnapshot* /*snapshot*/) {
     } else {
         mvwprintw(window, 1, 2, "No config loaded.");
     }
-    wrefresh(window);
+    wnoutrefresh(window);
 }
 
 bool HelpPanel::handle_input(int /*key*/) {
