@@ -184,16 +184,12 @@ bool PluginPageScreen::handle_input(int key) {
         }
         case 'r':
         case 'R': {
-            // Force immediate refresh by zeroing the last run timestamp in the live backend engine
-            // AND actively pulling the data immediately so the UI is instantaneous
+            // Force refresh by zeroing the last run timestamp — the background
+            // collection thread will re-run this plugin on its next tick (~1s)
             if (pm_) {
                 PluginManager* live_pm = (PluginManager*)pm_;
-                if (selected_plugin_idx_ < live_pm->num_plugins) {
-                    live_pm->plugins[selected_plugin_idx_].last_run_us = 0;
-                    
-                    // Call collect directly to immediately run the plugin script
-                    // We'll preserve other plugins' timestamps, so only this one (or ones at interval) will run
-                    plugin_manager_collect(live_pm, nullptr);
+                for (int i = 0; i < live_pm->num_plugins; i++) {
+                    live_pm->plugins[i].last_run_us = 0;
                 }
             }
             return true;
