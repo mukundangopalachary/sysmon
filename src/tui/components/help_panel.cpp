@@ -11,7 +11,16 @@ void HelpPanel::render(const SystemSnapshot* /*snapshot*/) {
     draw_border(false);
     draw_title("Keybindings");
     
-    mvwprintw(window, 1, 2, "[d] Dashboard  [p] Process List  [n] Connections  [^P] Plugins  [q] Quit");
+    if (cfg_) {
+        mvwprintw(window, 1, 2, "[%s] Dashboard  [%s] Processes  [%s] Network  [%s] Plugins  [%s] Quit",
+                  cfg_->keybindings.dashboard,
+                  cfg_->keybindings.process_list,
+                  cfg_->keybindings.connections,
+                  cfg_->keybindings.plugins,
+                  cfg_->keybindings.quit);
+    } else {
+        mvwprintw(window, 1, 2, "No config loaded.");
+    }
     wrefresh(window);
 }
 

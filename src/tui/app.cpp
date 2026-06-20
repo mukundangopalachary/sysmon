@@ -23,7 +23,21 @@ int Application::run(int argc, char** argv) {
         use_default_colors();
     }
 
+    char config_path[512];
+    config_get_user_config_path(config_path, sizeof(config_path));
+    
+    config_init_defaults(&cfg_);
+    if (!config_load(&cfg_, config_path)) {
+        // Automatically generate the default config file for the user if it doesn't exist
+        config_ensure_directories();
+        config_save(&cfg_, config_path);
+    }
+
+    theme_mgr_.set_theme(cfg_.display.theme);
     theme_mgr_.init();
+    
+    screen_mgr_.set_config(&cfg_);
+    input_handler_.init(&cfg_, &screen_mgr_);
 
     register_screen("dashboard", std::make_unique<DashboardScreen>());
     register_screen("connection", std::make_unique<ConnectionScreen>());

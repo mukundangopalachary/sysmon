@@ -15,9 +15,13 @@ DashboardScreen::DashboardScreen() {
 DashboardScreen::~DashboardScreen() {}
 
 void DashboardScreen::render(const SystemSnapshot* snapshot) {
-    if (!is_visible()) return;
+    if (!visible_) return;
     
     for (auto& panel : panels_) {
+        // If the panel is a HelpPanel, pass the config
+        HelpPanel* hp = dynamic_cast<HelpPanel*>(panel.get());
+        if (hp) hp->set_config(cfg_);
+        
         panel->render(snapshot);
     }
     doupdate();

@@ -1,7 +1,15 @@
 #include "screen_manager.h"
 
 void ScreenManager::register_screen(const std::string& name, std::unique_ptr<Screen> screen) {
+    if (cfg_) screen->set_config(cfg_);
     screens_[name] = std::move(screen);
+}
+
+void ScreenManager::set_config(const SysmonConfig* cfg) {
+    cfg_ = cfg;
+    for (auto& pair : screens_) {
+        pair.second->set_config(cfg);
+    }
 }
 
 Screen* ScreenManager::get_screen(const std::string& name) {

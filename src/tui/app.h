@@ -11,17 +11,24 @@
 
 extern "C" {
 #include "../core/snapshot_manager.h"
+#include "config_parser.h"
+#include "config_paths.h"
 }
+
+#include "theme.h"
+#include <string>
 
 class Application {
 public:
     Application(SnapshotManager* snap_mgr);
     int run(int argc, char** argv);
+
+private:
     void register_screen(const std::string& name, std::unique_ptr<Screen> screen);
     void switch_screen(const std::string& name);
 
-    SnapshotManager* snap_mgr_ = nullptr;
-private:
+    SnapshotManager* snap_mgr_;
+    SysmonConfig cfg_;
     ScreenManager screen_mgr_;
     InputHandler input_handler_;
     ThemeManager theme_mgr_;
