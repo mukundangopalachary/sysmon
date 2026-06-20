@@ -1,13 +1,27 @@
 [[plugin]]
-name = "docker-monitor"
+name = "gpu-monitor"
 version = "1.0.0"
-description = "Monitors running Docker containers and their resource usage"
-url = "https://example.com/sysmon-plugins/docker-monitor-1.0.0.tar.gz"
-checksum = "dummy-checksum"
+description = "Monitors GPU utilization and memory"
+url = "https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/registry/packages/gpu-monitor-1.0.0.tar.gz"
+checksum = "c1b5d085261a6a476fdfadc2d3b8f461aaeaef86894ce6b8b56fb447f1f38e72"
 
 [[plugin]]
-name = "gpu-monitor"
-version = "1.1.0"
-description = "Monitors GPU load and memory usage (Update Available!)"
-url = "https://example.com/sysmon-plugins/gpu-monitor-1.1.0.tar.gz"
-checksum = "dummy-checksum"
+name = "temperature"
+version = "1.0.0"
+description = "Monitors CPU thermal zones"
+url = "https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/registry/packages/temperature-1.0.0.tar.gz"
+checksum = "5361d11bc51d2a3a56e621917759f9255eca7dff8b04b7d7ab8cc75bd05a0e10"
+
+[[plugin]]
+name = "docker-stats"
+version = "1.0.0"
+description = "Monitors active Docker containers"
+url = "https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/registry/packages/docker-stats-1.0.0.tar.gz"
+checksum = "97fe61588ba3a943a5d49945e0d838507f71c29ae63e3997d74f16868b70bdc0"
+
+[[plugin]]
+name = "network-latency"
+version = "1.0.0"
+description = "Monitors ping latency to Google"
+url = "https://raw.githubusercontent.com/mukundangopalachary/sysmon/master/registry/packages/network-latency-1.0.0.tar.gz"
+checksum = "e3b95e5dd07f47892629619f223b3a16e5a85a9ed214fcfbd6e0ad57f7a39a3d"

@@ -146,8 +146,18 @@ bool registry_install_plugin(const RegistryPlugin* plugin) {
     printf("Downloading %s from %s...\n", plugin->name, plugin->url);
     snprintf(cmd, sizeof(cmd), "curl -fsSL %s -o %s", plugin->url, tarball_path);
     if (system(cmd) != 0) {
-        printf("Failed to download plugin.\n");
-        return false;
+        printf("Download failed from remote. Attempting local fallback...\n");
+        const char* filename = strrchr(plugin->url, '/');
+        if (filename) {
+            snprintf(cmd, sizeof(cmd), "cp registry/packages%s %s 2>/dev/null", filename, tarball_path);
+            if (system(cmd) != 0) {
+                printf("Failed to download plugin.\n");
+                return false;
+            }
+        } else {
+            printf("Failed to download plugin.\n");
+            return false;
+        }
     }
 
     printf("Extracting plugin...\n");
