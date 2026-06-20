@@ -5,7 +5,9 @@
 #include <algorithm>
 
 ConnectionTablePanel::ConnectionTablePanel(int height, int width, int start_y, int start_x)
-    : Panel(height, width, start_y, start_x) {}
+    : Panel(height, width, start_y, start_x) {
+    has_focus_ = true;
+}
 
 ConnectionTablePanel::~ConnectionTablePanel() {}
 
@@ -127,7 +129,10 @@ void ConnectionTablePanel::render(const SystemSnapshot* snapshot) {
         if (idx == selected_row_ && has_focus_) wattron(window, A_REVERSE);
         
         const auto& c = conns[idx];
-        
+        if (idx == selected_row_) {
+            selected_pid_ = c.pid;
+        }
+
         char pid_str[16] = "-";
         if (c.pid > 0) snprintf(pid_str, sizeof(pid_str), "%d", c.pid);
         
@@ -151,8 +156,11 @@ void ConnectionTablePanel::render(const SystemSnapshot* snapshot) {
 
 bool ConnectionTablePanel::handle_input(int key) {
     if (filter_mode_) {
-        if (key == '\n' || key == KEY_ENTER || key == 27) {
+        if (key == '\n' || key == KEY_ENTER) {
             filter_mode_ = false;
+        } else if (key == 27) { // ESC
+            filter_mode_ = false;
+            filter_query_.clear();
         } else if (key == KEY_BACKSPACE || key == 127 || key == '\b') {
             if (!filter_query_.empty()) filter_query_.pop_back();
         } else if (key >= 32 && key <= 126) {
@@ -163,6 +171,13 @@ bool ConnectionTablePanel::handle_input(int key) {
     }
 
     switch (key) {
+        case '\n':
+        case '\r':
+        case KEY_ENTER:
+            if (on_connection_selected && selected_pid_ > 0) {
+                on_connection_selected(selected_pid_);
+            }
+            return true;
         case KEY_UP:
         case 'k':
             if (selected_row_ > 0) selected_row_--;

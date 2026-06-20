@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(sysmon 
-    VERSION 1.0.0
+    VERSION 2.0.1
     DESCRIPTION "Terminal System Resource Monitor"
     LANGUAGES C CXX
 )
@@ -101,7 +101,7 @@ set(TUI_SOURCES
     src/tui/components/memory_panel.cpp
     src/tui/components/network_panel.cpp
     src/tui/components/disk_panel.cpp
-    src/tui/components/plugin_panel.cpp
+    src/tui/components/mini_process_panel.cpp
     src/tui/components/plugin_pane.cpp
     src/tui/components/help_panel.cpp
     src/tui/components/process_table.cpp
@@ -128,7 +128,7 @@ set(TUI_HEADERS
     src/tui/components/memory_panel.h
     src/tui/components/network_panel.h
     src/tui/components/disk_panel.h
-    src/tui/components/plugin_panel.h
+    src/tui/components/mini_process_panel.h
     src/tui/components/help_panel.h
     src/tui/components/process_table.h
     src/tui/components/connection_table.h

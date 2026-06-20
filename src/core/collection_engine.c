@@ -10,6 +10,7 @@
 #include "process_list.h"
 #include "sysinfo.h"
 #include "config_paths.h"
+#include "username_cache.h"
 
 static uint64_t get_time_us(void) {
     struct timespec ts;
@@ -146,7 +147,7 @@ void* collection_thread_func(void* arg) {
             usleep(100000); // Sleep for 100ms when paused
             continue;
         }
-        
+        bool skip_plugins = first_run;
         uint64_t start_time = get_time_us();
         
         if (engine->on_collection_start) {
@@ -177,6 +178,7 @@ void* collection_thread_func(void* arg) {
                 snap->connections->capacity = 4096;
             }
             net_connections_read(snap->connections);
+            map_connection_pids(snap);
         }
         
         if (engine->collect_disk_io) {
@@ -202,7 +204,11 @@ void* collection_thread_func(void* arg) {
         
         snap->collection_sequence++;
         snap->collection_duration_us = get_time_us() - start_time;
-        plugin_manager_collect(&engine->plugin_mgr, &engine->plugin_data_buf);
+        
+        if (!skip_plugins) {
+            plugin_manager_collect(&engine->plugin_mgr, &engine->plugin_data_buf);
+        }
+        
         snap->plugin_data = &engine->plugin_data_buf;
         snap->plugin_mgr = &engine->plugin_mgr;
 
@@ -234,6 +240,9 @@ int collection_engine_init(CollectionEngine* engine, SnapshotManager* mgr) {
     memset(engine, 0, sizeof(*engine));
     engine->snapshot_mgr = mgr;
     engine->collection_interval_ms = 1000;
+    
+    // Initialize username cache
+    username_cache_init();
     engine->process_max_count = 10000;
     engine->collect_disk_io = true;
     engine->collect_connections = true;
@@ -281,6 +290,9 @@ void collection_engine_destroy(CollectionEngine* engine) {
     if (engine->running) {
         collection_engine_stop(engine);
     }
+    
+    // Destroy username cache
+    username_cache_destroy();
     
     if (engine->prev_cpu) {
         free(engine->prev_cpu);

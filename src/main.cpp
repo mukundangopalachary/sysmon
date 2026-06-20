@@ -10,7 +10,7 @@
 #include <fcntl.h>
 
 void print_help() {
-    std::cout << "sysmon v1.0.0 - Interactive System Monitor\n\n"
+    std::cout << "sysmon v2.0.1 - Interactive System Monitor\n\n"
               << "Usage:\n"
               << "  sysmon [OPTIONS]            (Starts the TUI)\n"
               << "  sysmon <command> [args]     (Runs CLI commands)\n\n"
@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
             print_help();
             return 0;
         } else if (arg == "-v" || arg == "--version") {
-            std::cout << "sysmon version 1.0.0" << std::endl;
+            std::cout << "sysmon version 2.0.1" << std::endl;
             return 0;
         } else if (arg == "-d" || arg == "--debug") {
             // Future debug toggle

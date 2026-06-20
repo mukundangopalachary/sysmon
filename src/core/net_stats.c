@@ -135,3 +135,51 @@ int net_connections_read(ConnectionTableSnapshot* snap) {
     
     return 0;
 }
+
+#include <dirent.h>
+#include <unistd.h>
+
+void map_connection_pids(SystemSnapshot* snap) {
+    if (!snap || !snap->connections || snap->connections->num_connections == 0) return;
+    
+    DIR* proc_dir = opendir("/proc");
+    if (!proc_dir) return;
+    
+    struct dirent* proc_ent;
+    while ((proc_ent = readdir(proc_dir)) != NULL) {
+        if (proc_ent->d_name[0] < '1' || proc_ent->d_name[0] > '9') continue;
+        
+        int pid = atoi(proc_ent->d_name);
+        
+        char fd_path[512];
+        snprintf(fd_path, sizeof(fd_path), "/proc/%s/fd", proc_ent->d_name);
+        
+        DIR* fd_dir = opendir(fd_path);
+        if (!fd_dir) continue;
+        
+        struct dirent* fd_ent;
+        while ((fd_ent = readdir(fd_dir)) != NULL) {
+            if (fd_ent->d_name[0] == '.') continue;
+            
+            char link_path[1024];
+            snprintf(link_path, sizeof(link_path), "%s/%s", fd_path, fd_ent->d_name);
+            
+            char target[256];
+            ssize_t len = readlink(link_path, target, sizeof(target) - 1);
+            if (len > 0) {
+                target[len] = '\0';
+                if (strncmp(target, "socket:[", 8) == 0) {
+                    uint64_t inode = strtoull(target + 8, NULL, 10);
+                    // Find it in our connections
+                    for (int i = 0; i < snap->connections->num_connections; i++) {
+                        if (snap->connections->connections[i].inode == inode) {
+                            snap->connections->connections[i].pid = pid;
+                        }
+                    }
+                }
+            }
+        }
+        closedir(fd_dir);
+    }
+    closedir(proc_dir);
+}

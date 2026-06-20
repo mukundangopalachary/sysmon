@@ -39,7 +39,7 @@ int cli_plugin_main(int argc, char** argv) {
             struct dirent* dir;
             while ((dir = readdir(d)) != NULL) {
                 if (dir->d_type == DT_DIR && dir->d_name[0] != '.') {
-                    char full_dir[512];
+                    char full_dir[1024];
                     snprintf(full_dir, sizeof(full_dir), "%s/%s", plugins_dir, dir->d_name);
                     PluginManifest manifest;
                     if (plugin_manifest_parse(full_dir, &manifest)) {
@@ -69,7 +69,7 @@ int cli_plugin_main(int argc, char** argv) {
             printf("Usage: sysmon plugin info <name>\n");
             return 1;
         }
-        char full_dir[512];
+        char full_dir[1024];
         snprintf(full_dir, sizeof(full_dir), "%s/%s", plugins_dir, argv[3]);
         PluginManifest manifest;
         if (plugin_manifest_parse(full_dir, &manifest)) {
@@ -88,7 +88,7 @@ int cli_plugin_main(int argc, char** argv) {
             printf("Usage: sysmon plugin check <name>\n");
             return 1;
         }
-        char executable[512];
+        char executable[1024];
         snprintf(executable, sizeof(executable), "%s/%s/plugin.sh", plugins_dir, argv[3]);
         char* output = NULL;
         printf("Running check for plugin '%s'...\n", argv[3]);

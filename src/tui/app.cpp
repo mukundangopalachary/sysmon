@@ -45,7 +45,17 @@ int Application::run(int argc, char** argv) {
     input_handler_.init(&cfg_, &screen_mgr_, engine_);
 
     register_screen("dashboard", std::make_unique<DashboardScreen>());
-    register_screen("connection", std::make_unique<ConnectionScreen>());
+    
+    auto connection_screen = std::make_unique<ConnectionScreen>();
+    connection_screen->on_connection_selected = [this](int pid) {
+        auto detail = static_cast<ProcessDetailScreen*>(screen_mgr_.get_screen("process_detail"));
+        if (detail) {
+            detail->open(pid);
+            switch_screen("process_detail");
+        }
+    };
+    register_screen("connection", std::move(connection_screen));
+    
     register_screen("plugin_page", std::make_unique<PluginPageScreen>());
     
     auto process_list = std::make_unique<ProcessListScreen>();

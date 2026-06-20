@@ -5,6 +5,7 @@
 #include "components/header.h"
 #include "components/help_panel.h"
 #include <memory>
+#include <functional>
 
 class ConnectionScreen : public Screen {
 public:
@@ -14,6 +15,8 @@ public:
     bool handle_input(int key) override;
     void on_resize() override;
     void set_config(const SysmonConfig* cfg) override;
+
+    std::function<void(int)> on_connection_selected;
 
 private:
     std::unique_ptr<HeaderPanel> header_panel_;

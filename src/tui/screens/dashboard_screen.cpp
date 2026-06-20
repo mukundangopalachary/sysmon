@@ -4,7 +4,7 @@
 #include "components/memory_panel.h"
 #include "components/network_panel.h"
 #include "components/disk_panel.h"
-#include "components/plugin_panel.h"
+#include "components/mini_process_panel.h"
 #include "components/help_panel.h"
 #include <ncurses.h>
 
@@ -42,7 +42,7 @@ void DashboardScreen::on_resize() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     
-    int header_h = 3;
+    int header_h = 7;
     int mid_h = 10;
     int half_w = max_x / 2;
     int bot_h = max_y - header_h - mid_h - 3; // reserve 3 for help panel
@@ -54,6 +54,6 @@ void DashboardScreen::on_resize() {
     panels_.push_back(std::make_unique<MemoryPanel>(mid_h, max_x - half_w, header_h, half_w));
     panels_.push_back(std::make_unique<NetworkPanel>(bot_h, third_w, header_h + mid_h, 0));
     panels_.push_back(std::make_unique<DiskPanel>(bot_h, third_w, header_h + mid_h, third_w));
-    panels_.push_back(std::make_unique<PluginPanel>(bot_h, max_x - 2 * third_w, header_h + mid_h, 2 * third_w));
+    panels_.push_back(std::make_unique<MiniProcessPanel>(bot_h, max_x - 2 * third_w, header_h + mid_h, 2 * third_w));
     panels_.push_back(std::make_unique<HelpPanel>(3, max_x, header_h + mid_h + bot_h, 0));
 }

@@ -5,5 +5,6 @@
 
 int net_stats_read(NetworkSnapshot* snap);
 int net_connections_read(ConnectionTableSnapshot* snap);
+void map_connection_pids(SystemSnapshot* snap);
 
 #endif /* SYSMON_NET_STATS_H */

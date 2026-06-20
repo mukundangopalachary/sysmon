@@ -4,7 +4,9 @@
 #include <vector>
 
 ProcessTablePanel::ProcessTablePanel(int height, int width, int start_y, int start_x)
-    : Panel(height, width, start_y, start_x) {}
+    : Panel(height, width, start_y, start_x) {
+    has_focus_ = true;
+}
 
 ProcessTablePanel::~ProcessTablePanel() {}
 
@@ -136,8 +138,11 @@ void ProcessTablePanel::render(const SystemSnapshot* snapshot) {
 
 bool ProcessTablePanel::handle_input(int key) {
     if (filter_mode_) {
-        if (key == '\n' || key == KEY_ENTER || key == 27) { // 27 is ESC
+        if (key == '\n' || key == KEY_ENTER) {
             filter_mode_ = false;
+        } else if (key == 27) { // 27 is ESC
+            filter_mode_ = false;
+            filter_query_.clear();
         } else if (key == KEY_BACKSPACE || key == 127 || key == '\b') {
             if (!filter_query_.empty()) filter_query_.pop_back();
         } else if (key >= 32 && key <= 126) {
