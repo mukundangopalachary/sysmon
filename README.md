@@ -18,12 +18,22 @@
 
 ##Installation
 
-### Prerequisites
+### 1. Pre-compiled Binaries (Easiest)
+
+You can download the pre-compiled binary directly using `curl` and extract it:
+
+```bash
+curl -LO https://github.com/mukundangopalachary/sysmon/releases/download/v2.0.1/sysmon-linux-x86_64.tar.gz
+tar -xzvf sysmon-linux-x86_64.tar.gz
+sudo mv sysmon sysmon-cli /usr/local/bin/
+```
+
+### 2. Build from Source
+
+#### Prerequisites
 - CMake (3.15+)
 - GCC/G++ or Clang (C11 and C++17 support)
 - Ncurses Library (`libncurses-dev` or `ncurses-devel`)
-
-### Build & Install
 
 1. Clone the repository:
    ```bash
@@ -71,16 +81,24 @@ sysmon
 
 ### Using the CLI
 
-You can interact with sysmon's configuration and plugin registry directly from your terminal:
+You do not need to manually edit `.toml` files to install or manage plugins! You can do everything directly from your terminal using the built-in CLI:
 
 ```bash
-# Manage Plugins
-sysmon plugin install github.com/user/custom-gpu-plugin
-sysmon plugin list
-sysmon plugin remove docker-stats
+# First, pull the latest plugin index from the remote registry
+sysmon-cli registry update
 
-# Sync the registry with your TOML config
-sysmon registry sync
+# Search for available plugins
+sysmon-cli plugin search docker
+
+# Install a plugin
+sysmon-cli plugin install docker-stats
+
+# Enable or Disable an installed plugin
+sysmon-cli plugin enable docker-stats
+sysmon-cli plugin disable docker-stats
+
+# List all your currently installed plugins
+sysmon-cli plugin list
 ```
 
 ---
