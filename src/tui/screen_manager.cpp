@@ -13,6 +13,11 @@ void ScreenManager::switch_screen(const std::string& name) {
     auto it = screens_.find(name);
     if (it != screens_.end()) {
         if (current_screen_) current_screen_->on_exit();
+        
+        // Clear stdscr to remove leftover windows from previous screen
+        erase();
+        refresh();
+        
         current_screen_ = it->second.get();
         current_screen_->on_enter();
         current_screen_->on_resize();

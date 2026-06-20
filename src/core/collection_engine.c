@@ -9,6 +9,7 @@
 #include "disk_stats.h"
 #include "process_list.h"
 #include "sysinfo.h"
+#include "config_paths.h"
 
 static uint64_t get_time_us(void) {
     struct timespec ts;
@@ -196,9 +197,9 @@ void* collection_thread_func(void* arg) {
         
         snap->collection_sequence++;
         snap->collection_duration_us = get_time_us() - start_time;
-        
         plugin_manager_collect(&engine->plugin_mgr, &engine->plugin_data_buf);
         snap->plugin_data = &engine->plugin_data_buf;
+        snap->plugin_mgr = &engine->plugin_mgr;
 
         snapshot_manager_publish(engine->snapshot_mgr);
         
@@ -242,7 +243,11 @@ int collection_engine_init(CollectionEngine* engine, SnapshotManager* mgr) {
 int collection_engine_start(CollectionEngine* engine) {
     if (!engine || engine->running) return -1;
     
-    plugin_manager_init(&engine->plugin_mgr, "scripts/plugins");
+    char plugins_dir[512];
+    config_get_user_data_path(plugins_dir, sizeof(plugins_dir));
+    strncat(plugins_dir, "/plugins", sizeof(plugins_dir) - strlen(plugins_dir) - 1);
+    
+    plugin_manager_init(&engine->plugin_mgr, plugins_dir);
     plugin_manager_start_all(&engine->plugin_mgr);
     
     engine->running = true;

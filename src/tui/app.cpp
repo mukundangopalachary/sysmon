@@ -4,6 +4,7 @@
 #include "screens/process_list_screen.h"
 #include "screens/connection_screen.h"
 #include "screens/process_detail_screen.h"
+#include "screens/plugin_page_screen.h"
 Application::Application(SnapshotManager* snap_mgr) : snap_mgr_(snap_mgr), event_loop_(&screen_mgr_, &input_handler_) {}
 
 int Application::run(int argc, char** argv) {
@@ -15,7 +16,7 @@ int Application::run(int argc, char** argv) {
     noecho();
     nodelay(stdscr, TRUE);
     keypad(stdscr, TRUE);
-    curs_set(1);
+    curs_set(0);
 
     if (has_colors()) {
         start_color();
@@ -26,6 +27,7 @@ int Application::run(int argc, char** argv) {
 
     register_screen("dashboard", std::make_unique<DashboardScreen>());
     register_screen("connection", std::make_unique<ConnectionScreen>());
+    register_screen("plugin_page", std::make_unique<PluginPageScreen>());
     
     auto process_list = std::make_unique<ProcessListScreen>();
     process_list->on_process_selected = [this](int pid) {

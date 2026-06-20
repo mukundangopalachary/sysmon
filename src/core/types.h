@@ -325,6 +325,7 @@ typedef struct {
     
     /* Plugin data (optional) */
     void* plugin_data;              /* Opaque, cast by plugin manager */
+    void* plugin_mgr;               /* Opaque pointer to PluginManager */
     
 } SystemSnapshot;
 

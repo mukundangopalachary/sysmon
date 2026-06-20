@@ -11,6 +11,8 @@ typedef struct {
 
 typedef struct PluginManager PluginManager;
 
+#include "plugin_manifest.h"
+
 typedef struct {
     char name[64];
     char path[512];
@@ -19,6 +21,9 @@ typedef struct {
     int interval_ms;
     bool running;
     bool enabled;
+    uint64_t last_run_us;
+    char cached_output[4096];
+    PluginManifest manifest;
 } PluginInstance;
 
 struct PluginManager {

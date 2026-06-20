@@ -16,8 +16,13 @@ void EventLoop::run(SnapshotManager* snap_mgr) {
             if (!handled) {
                 if (ch == 'p') screen_mgr_->switch_screen("process_list");
                 else if (ch == 'n') screen_mgr_->switch_screen("connection");
+                else if (ch == KEY_F(4) || ch == 'L' || ch == 'l' || ch == 16) screen_mgr_->switch_screen("plugin_page");
                 else if (ch == 'd' || ch == 27) screen_mgr_->switch_screen("dashboard"); // 27 = ESC
-                else input_handler_->handle(ch);
+                else handled = input_handler_->handle(ch);
+            }
+            // If we processed a key, force an immediate redraw
+            if (handled || ch == 'p' || ch == 'n' || ch == KEY_F(4) || ch == 'L' || ch == 'l' || ch == 16 || ch == 'd' || ch == 27) {
+                counter = 100;
             }
         }
 

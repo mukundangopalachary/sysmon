@@ -102,6 +102,7 @@ set(TUI_SOURCES
     src/tui/components/network_panel.cpp
     src/tui/components/disk_panel.cpp
     src/tui/components/plugin_panel.cpp
+    src/tui/components/plugin_pane.cpp
     src/tui/components/help_panel.cpp
     src/tui/components/process_table.cpp
     src/tui/components/connection_table.cpp
@@ -112,6 +113,7 @@ set(TUI_SOURCES
     src/tui/screens/connection_screen.cpp
     src/tui/screens/process_detail_screen.cpp
     src/tui/screens/help_screen.cpp
+    src/tui/screens/plugin_page_screen.cpp
 )
 
 set(TUI_HEADERS

@@ -33,15 +33,19 @@ void Panel::on_resize(int height, int width, int start_y, int start_x) {
 
 bool Panel::handle_input(int /*key*/) { return false; }
 
-void Panel::draw_border(bool /*focused*/) {
+void Panel::draw_border(bool focused) {
     if (window) {
+        if (focused) wattron(window, A_BOLD);
         box(window, 0, 0);
+        if (focused) wattroff(window, A_BOLD);
     }
 }
 
 void Panel::draw_title(const char* title) {
     if (window && title) {
+        if (has_focus_) wattron(window, A_REVERSE);
         mvwprintw(window, 0, 2, " %s ", title);
+        if (has_focus_) wattroff(window, A_REVERSE);
     }
 }
 
