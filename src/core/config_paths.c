@@ -60,6 +60,14 @@ bool config_ensure_directories(void) {
     config_get_user_data_path(path, sizeof(path));
     if (!make_dir_recursive(path)) return false;
     
+    char plugins_path[1024];
+    snprintf(plugins_path, sizeof(plugins_path), "%s/plugins", path);
+    if (!make_dir_recursive(plugins_path)) return false;
+
+    char registry_path[1024];
+    snprintf(registry_path, sizeof(registry_path), "%s/registry", path);
+    if (!make_dir_recursive(registry_path)) return false;
+    
     config_get_user_cache_path(path, sizeof(path));
     if (!make_dir_recursive(path)) return false;
     

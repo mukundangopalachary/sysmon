@@ -1,6 +1,7 @@
 #include "cli_main.h"
 #include <stdio.h>
 #include <string.h>
+#include "config_paths.h"
 
 static void print_usage() {
     printf("sysmon-cli - Command Line Management for sysmon\n\n");
@@ -17,6 +18,8 @@ int cli_main(int argc, char** argv) {
         print_usage();
         return 1;
     }
+
+    config_ensure_directories();
 
     const char* command = argv[1];
 
