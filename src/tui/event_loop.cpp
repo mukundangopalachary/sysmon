@@ -30,16 +30,15 @@ void EventLoop::run(SnapshotManager* snap_mgr) {
             }
             // If we processed a key, force an immediate redraw
             if (handled) {
-                counter = 100;
+                counter = 1000;
             }
         }
 
         counter += 10;
-        if (counter >= 100) {
+        if (counter >= 1000) {
             const SystemSnapshot* snap = snapshot_manager_get_current(snap_mgr);
             if (snap != nullptr) {
                 screen_mgr_->render(snap);
-                refresh();
             }
             counter = 0;
         }
