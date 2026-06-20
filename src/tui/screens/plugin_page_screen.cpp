@@ -1,7 +1,11 @@
 #include "screens/plugin_page_screen.h"
 #include <ncurses.h>
 #include <cstdlib>
+
+extern "C" {
 #include "plugin_manager.h"
+#include "config_paths.h"
+}
 
 PluginPageScreen::PluginPageScreen() {
     on_resize();
@@ -156,11 +160,14 @@ bool PluginPageScreen::handle_input(int key) {
             const char* editor = getenv("EDITOR");
             if (!editor) editor = "nano";
             
-            char path[512];
+            char path[1024];
+            config_get_user_config_path(path, sizeof(path));
+            // Instead of sysmon.toml, we want plugins.toml
+            // We'll just construct it manually to ensure we get plugins.toml
             snprintf(path, sizeof(path), "%s/.config/sysmon/plugins.toml", getenv("HOME"));
             
-            char cmd[1024];
-            snprintf(cmd, sizeof(cmd), "%s %s", editor, path);
+            char cmd[2048];
+            snprintf(cmd, sizeof(cmd), "%s \"%s\"", editor, path);
             int ret = system(cmd);
             (void)ret;
             
@@ -171,10 +178,15 @@ bool PluginPageScreen::handle_input(int key) {
         case 'r':
         case 'R': {
             // Force immediate refresh by zeroing the last run timestamp in the live backend engine
+            // AND actively pulling the data immediately so the UI is instantaneous
             if (pm_) {
                 PluginManager* live_pm = (PluginManager*)pm_;
                 if (selected_plugin_idx_ < live_pm->num_plugins) {
                     live_pm->plugins[selected_plugin_idx_].last_run_us = 0;
+                    
+                    // Call collect directly to immediately run the plugin script
+                    // We'll preserve other plugins' timestamps, so only this one (or ones at interval) will run
+                    plugin_manager_collect(live_pm, nullptr);
                 }
             }
             return true;

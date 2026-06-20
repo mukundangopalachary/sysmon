@@ -1,7 +1,10 @@
 #include "components/plugin_pane.h"
 #include <ncurses.h>
 #include <cstring>
+
+extern "C" {
 #include "plugin_manager.h"
+}
 
 PluginPaneComponent::PluginPaneComponent(int height, int width, int start_y, int start_x, const std::string& plugin_name)
     : Panel(height, width, start_y, start_x), plugin_name_(plugin_name) {}
@@ -44,12 +47,22 @@ void PluginPaneComponent::render(const SystemSnapshot* snapshot) {
         return;
     }
     
-    // Render the pane contents based on cached_output
+    // Simple JSON flattening to make it look nicer
     char temp[4096];
     snprintf(temp, sizeof(temp), "%s", p_inst->cached_output);
     char* line = strtok(temp, "\n");
     int y = 2;
     while (line && y < height_ - 1) {
+        // Strip leading spaces
+        while (*line == ' ') line++;
+        // Skip brackets if they are alone
+        if (strcmp(line, "{") == 0 || strcmp(line, "}") == 0 || 
+            strcmp(line, "[") == 0 || strcmp(line, "]") == 0 ||
+            strcmp(line, "},") == 0 || strcmp(line, "],") == 0) {
+            line = strtok(NULL, "\n");
+            continue;
+        }
+        
         mvwprintw(window, y++, 2, "%.*s", width_ - 4, line);
         line = strtok(NULL, "\n");
     }
@@ -85,5 +98,5 @@ int PluginPaneComponent::get_desired_height(const SystemSnapshot* /*snapshot*/) 
     if (!expanded_) return 3; // Just the title bar
     
     // Height depends on how many panes/data rows
-    return 10; // Placeholder
+    return 15; // Increased to show more data lines
 }
