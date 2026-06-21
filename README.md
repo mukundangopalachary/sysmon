@@ -38,7 +38,7 @@ rm sysmon-linux-x86_64.tar.gz
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/sysmon.git
+   git clone https://github.com/mukundangopalachary/sysmon.git
    cd sysmon
    ```
 
